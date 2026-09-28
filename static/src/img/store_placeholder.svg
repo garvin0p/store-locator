@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="No store image available">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#eef2ff"/>
+      <stop offset="100%" stop-color="#dbeafe"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <g fill="#93c5fd">
+    <path d="M96 200h320v168a16 16 0 0 1-16 16H112a16 16 0 0 1-16-16V200z"/>
+    <path d="M80 152a40 40 0 0 1 40-40h272a40 40 0 0 1 40 40l-14 34a44 44 0 0 1-84 8 44 44 0 0 1-84 0 44 44 0 0 1-84-8l-14-34z"/>
+  </g>
+  <g fill="#3b82f6">
+    <rect x="136" y="268" width="60" height="116" rx="8"/>
+  </g>
+  <g fill="#60a5fa">
+    <rect x="236" y="268" width="140" height="20" rx="8"/>
+    <rect x="236" y="308" width="140" height="20" rx="8"/>
+    <rect x="236" y="348" width="100" height="20" rx="8"/>
+  </g>
+  <text x="256" y="440" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#64748b">No image available</text>
+</svg>

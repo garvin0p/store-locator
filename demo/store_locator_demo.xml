@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Fictional demo company: NexaMart. Loaded only when demo data is enabled. -->
+    <record id="demo_store_austin" model="store.location">
+        <field name="name">NexaMart Austin Downtown</field>
+        <field name="code">NM-AUS-01</field>
+        <field name="category_id" ref="store_category_retail"/>
+        <field name="sequence">1</field>
+        <field name="is_featured" eval="True"/>
+        <field name="short_description">Our flagship Austin store with the full product range and in-store pickup.</field>
+        <field name="street">211 Congress Ave</field>
+        <field name="city">Austin</field>
+        <field name="zip">78701</field>
+        <field name="state_id" ref="base.state_us_44"/>
+        <field name="country_id" ref="base.us"/>
+        <field name="phone">+1 512-555-0142</field>
+        <field name="email">austin@nexamart.example.com</field>
+        <field name="website">https://www.nexamart.example.com</field>
+        <field name="latitude" eval="30.2672"/>
+        <field name="longitude" eval="-97.7431"/>
+        <field name="mon_hours">9:00 - 20:00</field>
+        <field name="tue_hours">9:00 - 20:00</field>
+        <field name="wed_hours">9:00 - 20:00</field>
+        <field name="thu_hours">9:00 - 20:00</field>
+        <field name="fri_hours">9:00 - 21:00</field>
+        <field name="sat_hours">10:00 - 21:00</field>
+        <field name="sun_hours">11:00 - 18:00</field>
+        <field name="tag_ids" eval="[Command.link(ref('store_tag_parking')), Command.link(ref('store_tag_wheelchair')), Command.link(ref('store_tag_pickup')), Command.link(ref('store_tag_wifi'))]"/>
+    </record>
+
+    <record id="demo_store_dallas" model="store.location">
+        <field name="name">NexaMart Dallas Uptown</field>
+        <field name="code">NM-DAL-02</field>
+        <field name="category_id" ref="store_category_showroom"/>
+        <field name="sequence">2</field>
+        <field name="is_featured" eval="True"/>
+        <field name="short_description">Interactive showroom with live product demonstrations every weekend.</field>
+        <field name="street">2901 McKinney Ave</field>
+        <field name="city">Dallas</field>
+        <field name="zip">75204</field>
+        <field name="state_id" ref="base.state_us_44"/>
+        <field name="country_id" ref="base.us"/>
+        <field name="phone">+1 214-555-0177</field>
+        <field name="email">dallas@nexamart.example.com</field>
+        <field name="latitude" eval="32.8064"/>
+        <field name="longitude" eval="-96.7999"/>
+        <field name="mon_hours">10:00 - 19:00</field>
+        <field name="tue_hours">10:00 - 19:00</field>
+        <field name="wed_hours">10:00 - 19:00</field>
+        <field name="thu_hours">10:00 - 19:00</field>
+        <field name="fri_hours">10:00 - 20:00</field>
+        <field name="sat_hours">10:00 - 20:00</field>
+        <field name="sun_hours">12:00 - 17:00</field>
+        <field name="tag_ids" eval="[Command.link(ref('store_tag_parking')), Command.link(ref('store_tag_pet_friendly')), Command.link(ref('store_tag_wifi')), Command.link(ref('store_tag_bilingual'))]"/>
+    </record>
+
+    <record id="demo_store_houston" model="store.location">
+        <field name="name">NexaMart Houston Service Center</field>
+        <field name="code">NM-HOU-03</field>
+        <field name="category_id" ref="store_category_service"/>
+        <field name="sequence">3</field>
+        <field name="short_description">Certified repairs and maintenance, walk-ins welcome on weekdays.</field>
+        <field name="street">4710 Bellaire Blvd</field>
+        <field name="city">Houston</field>
+        <field name="zip">77025</field>
+        <field name="state_id" ref="base.state_us_44"/>
+        <field name="country_id" ref="base.us"/>
+        <field name="phone">+1 713-555-0110</field>
+        <field name="email">houston.service@nexamart.example.com</field>
+        <field name="latitude" eval="29.7170"/>
+        <field name="longitude" eval="-95.4163"/>
+        <field name="mon_hours">8:00 - 18:00</field>
+        <field name="tue_hours">8:00 - 18:00</field>
+        <field name="wed_hours">8:00 - 18:00</field>
+        <field name="thu_hours">8:00 - 18:00</field>
+        <field name="fri_hours">8:00 - 18:00</field>
+        <field name="sat_hours">9:00 - 13:00</field>
+        <field name="tag_ids" eval="[Command.link(ref('store_tag_parking')), Command.link(ref('store_tag_wheelchair'))]"/>
+    </record>
+
+    <record id="demo_store_chicago" model="store.location">
+        <field name="name">NexaMart Chicago Loop</field>
+        <field name="code">NM-CHI-04</field>
+        <field name="category_id" ref="store_category_retail"/>
+        <field name="sequence">4</field>
+        <field name="is_featured" eval="True"/>
+        <field name="short_description">Downtown Chicago store, two blocks from the L station.</field>
+        <field name="street">108 N State St</field>
+        <field name="city">Chicago</field>
+        <field name="zip">60602</field>
+        <field name="state_id" ref="base.state_us_14"/>
+        <field name="country_id" ref="base.us"/>
+        <field name="phone">+1 312-555-0192</field>
+        <field name="email">chicago@nexamart.example.com</field>
+        <field name="latitude" eval="41.8844"/>
+        <field name="longitude" eval="-87.6288"/>
+        <field name="mon_hours">9:00 - 20:00</field>
+        <field name="tue_hours">9:00 - 20:00</field>
+        <field name="wed_hours">9:00 - 20:00</field>
+        <field name="thu_hours">9:00 - 20:00</field>
+        <field name="fri_hours">9:00 - 20:00</field>
+        <field name="sat_hours">9:00 - 19:00</field>
+        <field name="sun_hours">10:00 - 17:00</field>
+        <field name="tag_ids" eval="[Command.link(ref('store_tag_wheelchair')), Command.link(ref('store_tag_open_sunday')), Command.link(ref('store_tag_pickup'))]"/>
+    </record>
+
+    <record id="demo_store_new_york" model="store.location">
+        <field name="name">NexaMart New York Flagship</field>
+        <field name="code">NM-NYC-05</field>
+        <field name="category_id" ref="store_category_showroom"/>
+        <field name="sequence">5</field>
+        <field name="is_featured" eval="True"/>
+        <field name="short_description">Three floors of flagship experiences in the heart of Manhattan.</field>
+        <field name="street">535 Fifth Ave</field>
+        <field name="city">New York</field>
+        <field name="zip">10017</field>
+        <field name="state_id" ref="base.state_us_27"/>
+        <field name="country_id" ref="base.us"/>
+        <field name="phone">+1 212-555-0138</field>
+        <field name="email">newyork@nexamart.example.com</field>
+        <field name="latitude" eval="40.7519"/>
+        <field name="longitude" eval="-73.9802"/>
+        <field name="mon_hours">9:00 - 21:00</field>
+        <field name="tue_hours">9:00 - 21:00</field>
+        <field name="wed_hours">9:00 - 21:00</field>
+        <field name="thu_hours">9:00 - 21:00</field>
+        <field name="fri_hours">9:00 - 21:00</field>
+        <field name="sat_hours">9:00 - 21:00</field>
+        <field name="sun_hours">10:00 - 19:00</field>
+        <field name="tag_ids" eval="[Command.link(ref('store_tag_wheelchair')), Command.link(ref('store_tag_bilingual')), Command.link(ref('store_tag_wifi')), Command.link(ref('store_tag_ev'))]"/>
+    </record>
+
+    <record id="demo_store_los_angeles" model="store.location">
+        <field name="name">NexaMart Los Angeles Westside</field>
+        <field name="code">NM-LAX-06</field>
+        <field name="category_id" ref="store_category_retail"/>
+        <field name="sequence">6</field>
+        <field name="short_description">Convenient West LA location with same-day pickup.</field>
+        <field name="street">10580 W Pico Blvd</field>
+        <field name="city">Los Angeles</field>
+        <field name="zip">90064</field>
+        <field name="state_id" ref="base.state_us_5"/>
+        <field name="country_id" ref="base.us"/>
+        <field name="phone">+1 310-555-0165</field>
+        <field name="email">la@nexamart.example.com</field>
+        <field name="latitude" eval="34.0435"/>
+        <field name="longitude" eval="-118.4410"/>
+        <field name="mon_hours">9:00 - 20:00</field>
+        <field name="tue_hours">9:00 - 20:00</field>
+        <field name="wed_hours">9:00 - 20:00</field>
+        <field name="thu_hours">9:00 - 20:00</field>
+        <field name="fri_hours">9:00 - 20:00</field>
+        <field name="sat_hours">10:00 - 19:00</field>
+        <field name="tag_ids" eval="[Command.link(ref('store_tag_parking')), Command.link(ref('store_tag_pickup')), Command.link(ref('store_tag_pet_friendly'))]"/>
+    </record>
+
+    <record id="demo_store_miami" model="store.location">
+        <field name="name">NexaMart Miami Bayside</field>
+        <field name="code">NM-MIA-07</field>
+        <field name="category_id" ref="store_category_pickup"/>
+        <field name="sequence">7</field>
+        <field name="short_description">Fast pickup point for online orders, open every day.</field>
+        <field name="street">401 Biscayne Blvd</field>
+        <field name="city">Miami</field>
+        <field name="zip">33132</field>
+        <field name="state_id" ref="base.state_us_10"/>
+        <field name="country_id" ref="base.us"/>
+        <field name="phone">+1 305-555-0128</field>
+        <field name="email">miami@nexamart.example.com</field>
+        <field name="latitude" eval="25.7826"/>
+        <field name="longitude" eval="-80.1862"/>
+        <field name="mon_hours">8:00 - 22:00</field>
+        <field name="tue_hours">8:00 - 22:00</field>
+        <field name="wed_hours">8:00 - 22:00</field>
+        <field name="thu_hours">8:00 - 22:00</field>
+        <field name="fri_hours">8:00 - 22:00</field>
+        <field name="sat_hours">8:00 - 22:00</field>
+        <field name="sun_hours">9:00 - 20:00</field>
+        <field name="tag_ids" eval="[Command.link(ref('store_tag_pickup')), Command.link(ref('store_tag_open_sunday')), Command.link(ref('store_tag_bilingual'))]"/>
+    </record>
+
+    <record id="demo_store_seattle" model="store.location">
+        <field name="name">NexaMart Seattle Pike Place</field>
+        <field name="code">NM-SEA-08</field>
+        <field name="category_id" ref="store_category_retail"/>
+        <field name="sequence">8</field>
+        <field name="short_description">Boutique store steps away from Pike Place Market.</field>
+        <field name="street">1428 1st Ave</field>
+        <field name="city">Seattle</field>
+        <field name="zip">98101</field>
+        <field name="state_id" ref="base.state_us_48"/>
+        <field name="country_id" ref="base.us"/>
+        <field name="phone">+1 206-555-0153</field>
+        <field name="email">seattle@nexamart.example.com</field>
+        <field name="latitude" eval="47.6080"/>
+        <field name="longitude" eval="-122.3387"/>
+        <field name="mon_hours">10:00 - 19:00</field>
+        <field name="tue_hours">10:00 - 19:00</field>
+        <field name="wed_hours">10:00 - 19:00</field>
+        <field name="thu_hours">10:00 - 19:00</field>
+        <field name="fri_hours">10:00 - 20:00</field>
+        <field name="sat_hours">10:00 - 20:00</field>
+        <field name="sun_hours">11:00 - 18:00</field>
+        <field name="tag_ids" eval="[Command.link(ref('store_tag_pet_friendly')), Command.link(ref('store_tag_wifi'))]"/>
+    </record>
+
+    <record id="demo_store_denver" model="store.location">
+        <field name="name">NexaMart Denver Cherry Creek</field>
+        <field name="code">NM-DEN-09</field>
+        <field name="category_id" ref="store_category_service"/>
+        <field name="sequence">9</field>
+        <field name="short_description">Service center with EV charging while you wait.</field>
+        <field name="street">3000 E 1st Ave</field>
+        <field name="city">Denver</field>
+        <field name="zip">80206</field>
+        <field name="state_id" ref="base.state_us_6"/>
+        <field name="country_id" ref="base.us"/>
+        <field name="phone">+1 303-555-0119</field>
+        <field name="email">denver@nexamart.example.com</field>
+        <field name="latitude" eval="39.7178"/>
+        <field name="longitude" eval="-104.9500"/>
+        <field name="mon_hours">8:00 - 18:00</field>
+        <field name="tue_hours">8:00 - 18:00</field>
+        <field name="wed_hours">8:00 - 18:00</field>
+        <field name="thu_hours">8:00 - 18:00</field>
+        <field name="fri_hours">8:00 - 18:00</field>
+        <field name="sat_hours">9:00 - 15:00</field>
+        <field name="tag_ids" eval="[Command.link(ref('store_tag_parking')), Command.link(ref('store_tag_ev')), Command.link(ref('store_tag_delivery'))]"/>
+    </record>
+
+    <record id="demo_store_boston" model="store.location">
+        <field name="name">NexaMart Boston Back Bay</field>
+        <field name="code">NM-BOS-10</field>
+        <field name="category_id" ref="store_category_pickup"/>
+        <field name="sequence">10</field>
+        <field name="short_description">24/7 pickup lockers with friendly staff on call.</field>
+        <field name="street">800 Boylston St</field>
+        <field name="city">Boston</field>
+        <field name="zip">02199</field>
+        <field name="state_id" ref="base.state_us_34"/>
+        <field name="country_id" ref="base.us"/>
+        <field name="phone">+1 617-555-0184</field>
+        <field name="email">boston@nexamart.example.com</field>
+        <field name="latitude" eval="42.3467"/>
+        <field name="longitude" eval="-71.0846"/>
+        <field name="is_24_hours" eval="True"/>
+        <field name="tag_ids" eval="[Command.link(ref('store_tag_pickup')), Command.link(ref('store_tag_24h')), Command.link(ref('store_tag_wheelchair'))]"/>
+    </record>
+
+    <!-- ======================================================== -->
+    <!-- Demo photo galleries (placeholder illustrations —         -->
+    <!-- replace them with real photos from the store form).       -->
+    <!-- ======================================================== -->
+    <record id="demo_gallery_aus_1" model="store.location.image">
+        <field name="store_id" ref="demo_store_austin"/>
+        <field name="name">Storefront</field>
+        <field name="sequence">10</field>
+        <field name="image_1920" type="base64" file="store_locator/static/src/img/gallery_1.svg"/>
+    </record>
+    <record id="demo_gallery_aus_2" model="store.location.image">
+        <field name="store_id" ref="demo_store_austin"/>
+        <field name="name">Sales Floor</field>
+        <field name="sequence">20</field>
+        <field name="image_1920" type="base64" file="store_locator/static/src/img/gallery_2.svg"/>
+    </record>
+    <record id="demo_gallery_aus_3" model="store.location.image">
+        <field name="store_id" ref="demo_store_austin"/>
+        <field name="name">Our Team</field>
+        <field name="sequence">30</field>
+        <field name="image_1920" type="base64" file="store_locator/static/src/img/gallery_4.svg"/>
+    </record>
+
+    <record id="demo_gallery_dal_1" model="store.location.image">
+        <field name="store_id" ref="demo_store_dallas"/>
+        <field name="name">Showroom Products</field>
+        <field name="sequence">10</field>
+        <field name="image_1920" type="base64" file="store_locator/static/src/img/gallery_6.svg"/>
+    </record>
+    <record id="demo_gallery_dal_2" model="store.location.image">
+        <field name="store_id" ref="demo_store_dallas"/>
+        <field name="name">Demo Counter</field>
+        <field name="sequence">20</field>
+        <field name="image_1920" type="base64" file="store_locator/static/src/img/gallery_3.svg"/>
+    </record>
+
+    <record id="demo_gallery_hou_1" model="store.location.image">
+        <field name="store_id" ref="demo_store_houston"/>
+        <field name="name">Service Counter</field>
+        <field name="sequence">10</field>
+        <field name="image_1920" type="base64" file="store_locator/static/src/img/gallery_3.svg"/>
+    </record>
+    <record id="demo_gallery_hou_2" model="store.location.image">
+        <field name="store_id" ref="demo_store_houston"/>
+        <field name="name">How to Reach Us</field>
+        <field name="sequence">20</field>
+        <field name="image_1920" type="base64" file="store_locator/static/src/img/gallery_5.svg"/>
+    </record>
+
+    <record id="demo_gallery_bos_1" model="store.location.image">
+        <field name="store_id" ref="demo_store_boston"/>
+        <field name="name">Pickup Point</field>
+        <field name="sequence">10</field>
+        <field name="image_1920" type="base64" file="store_locator/static/src/img/gallery_1.svg"/>
+    </record>
+</odoo>

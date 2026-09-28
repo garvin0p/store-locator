@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+
+    <!-- ===================== Search ===================== -->
+    <t t-name="store_locator.SearchWidget">
+        <form class="sl-w-search" t-on-submit="onSubmit" role="search">
+            <div class="sl-w-search-field">
+                <span t-if="o.showIcon" class="sl-w-search-icon fa fa-search" aria-hidden="true"/>
+                <input type="search" class="sl-w-search-input" t-att-placeholder="o.placeholder"
+                       aria-label="Search stores" t-att-value="state.search" t-on-input="onInput"/>
+            </div>
+            <button t-if="o.showButton" type="submit" class="btn btn-primary sl-w-search-btn">
+                <span class="fa fa-search" aria-hidden="true"/> <t t-out="o.buttonLabel"/>
+            </button>
+            <button t-if="o.showLocate and geolocation" type="button" class="sl-w-locate"
+                    t-att-disabled="state.locating ? 'disabled' : undefined" t-on-click="onLocate">
+                <span class="fa fa-crosshairs" aria-hidden="true"/>
+                <span class="sl-w-locate-label" t-out="state.locating ? 'Locating...' : o.locateLabel"/>
+            </button>
+            <label t-if="o.showSort and state.userLocation" class="sl-w-sort">
+                <span>Sort by</span>
+                <select class="sl-w-select" t-on-change="onSort">
+                    <option value="default" t-att-selected="state.sortBy === 'default' ? 'selected' : undefined">Recommended</option>
+                    <option value="distance" t-att-selected="state.sortBy === 'distance' ? 'selected' : undefined">Nearest first</option>
+                    <option value="name" t-att-selected="state.sortBy === 'name' ? 'selected' : undefined">Name</option>
+                </select>
+            </label>
+        </form>
+        <p class="sl-w-alert" role="alert" t-if="state.locationError">
+            <span class="fa fa-exclamation-circle" aria-hidden="true"/> <t t-out="state.locationError"/>
+        </p>
+    </t>
+
+    <!-- ===================== Filter ===================== -->
+    <t t-name="store_locator.FilterWidget">
+        <div t-attf-class="sl-w-filter sl-w-filter-#{type} sl-w-display-#{display or 'default'}">
+            <!-- choice based filters -->
+            <t t-if="['category', 'tags', 'country', 'state', 'radius', 'sort'].includes(type)">
+                <t t-if="mode === 'select'">
+                    <select class="sl-w-select" t-on-change="onSelect" t-att-disabled="stateDisabled ? 'disabled' : undefined"
+                            t-att-aria-label="type">
+                        <option value="" t-if="type !== 'sort'" t-out="type === 'radius' ? (o.allLabel || 'Any distance') : allLabel"/>
+                        <t t-foreach="choices" t-as="choice" t-key="choice.id">
+                            <option t-att-value="choice.id" t-att-selected="selectValue === '' + choice.id ? 'selected' : undefined"
+                                    t-out="type === 'radius' ? 'Within ' + choice.name : choice.name"/>
+                        </t>
+                    </select>
+                </t>
+                <t t-elif="mode === 'options'">
+                    <div class="sl-w-options" role="group">
+                        <label t-foreach="choices" t-as="choice" t-key="choice.id"
+                               t-attf-class="sl-w-option #{isActive(choice) ? 'is-active' : ''}">
+                            <input t-att-type="display === 'radio' ? 'radio' : 'checkbox'"
+                                   t-att-name="'sl-f-' + uid" t-att-checked="isActive(choice) ? 'checked' : undefined"
+                                   t-on-change="() => this.onChoice(choice)"/>
+                            <span class="sl-w-check" aria-hidden="true"/>
+                            <span t-if="choice.icon" t-att-class="choice.icon" aria-hidden="true"/>
+                            <span class="sl-w-option-text" t-out="choice.name"/>
+                        </label>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="sl-w-chips" role="group">
+                        <button type="button" t-foreach="choices" t-as="choice" t-key="choice.id"
+                                t-attf-class="sl-w-chip #{isActive(choice) ? 'is-active' : ''}"
+                                t-att-aria-pressed="isActive(choice) ? 'true' : 'false'"
+                                t-on-click="() => this.onChoice(choice)">
+                            <span t-if="choice.icon" t-att-class="choice.icon" aria-hidden="true"/>
+                            <t t-out="choice.name"/>
+                        </button>
+                    </div>
+                </t>
+            </t>
+
+            <!-- ZIP -->
+            <input t-elif="type === 'zip'" type="text" class="sl-w-input" t-att-placeholder="o.placeholder or 'e.g. 78701'"
+                   t-att-value="state.zip" t-on-input="onZip" aria-label="ZIP code"/>
+
+            <!-- Yes / no filters -->
+            <t t-elif="isBoolean">
+                <button t-if="display === 'button'" type="button"
+                        t-attf-class="sl-w-chip #{boolValue ? 'is-active' : ''}" t-on-click="toggleBool">
+                    <span t-attf-class="fa #{type === 'featured' ? 'fa-star' : 'fa-clock-o'}" aria-hidden="true"/>
+                    <t t-out="o.buttonLabel or (type === 'featured' ? 'Featured' : 'Open 24/7')"/>
+                </button>
+                <label t-else="" t-attf-class="sl-w-bool #{display === 'checkbox' ? 'sl-w-bool-checkbox' : 'sl-w-bool-switch'}">
+                    <input type="checkbox" t-att-checked="boolValue ? 'checked' : undefined" t-on-change="toggleBool"
+                           t-att-aria-label="type"/>
+                    <span class="sl-w-check" aria-hidden="true"/>
+                </label>
+            </t>
+
+            <!-- Clear / count -->
+            <button t-elif="type === 'clear'" type="button" class="sl-w-clear" t-on-click="onClear"
+                    t-att-disabled="!activeCount ? 'disabled' : undefined">
+                <span class="fa fa-times" aria-hidden="true"/>
+                <t t-out="o.buttonLabel or 'Clear filters'"/>
+                <span t-if="activeCount" class="sl-w-badge" t-out="activeCount"/>
+            </button>
+            <span t-elif="type === 'count'" class="sl-w-count" aria-live="polite">
+                <span class="fa fa-map-marker" aria-hidden="true"/> <t t-out="countLabel"/>
+            </span>
+        </div>
+    </t>
+
+    <!-- ===================== List ===================== -->
+    <t t-name="store_locator.ListWidget">
+        <div t-attf-class="sl-w-list sl-w-list-#{o.layout} #{o.scroll ? 'sl-w-list-scroll' : ''}">
+            <div class="sl-w-list-head" t-if="o.showHeader" aria-live="polite">
+                <span class="sl-w-count"><span class="fa fa-map-marker" aria-hidden="true"/> <t t-out="countText"/></span>
+                <span class="sl-spinner" t-if="state.loading" role="status" aria-label="Loading"/>
+            </div>
+            <p class="sl-w-alert" role="alert" t-if="state.error"><t t-out="state.error"/></p>
+            <div class="sl-w-list-body" tabindex="0">
+                <div class="sl-empty" t-if="state.ready and !state.loading and !stores.length and !state.error">
+                    <span class="sl-empty-icon fa fa-map-o" aria-hidden="true"/>
+                    <h3 class="sl-empty-title" t-out="o.emptyTitle"/>
+                    <p class="sl-empty-text" t-out="o.emptyText"/>
+                </div>
+                <div class="sl-w-cards" t-ref="cards"/>
+            </div>
+            <div class="sl-w-list-foot" t-if="state.hasMore">
+                <button type="button" class="sl-w-more" t-on-click="onLoadMore" t-att-disabled="state.loading ? 'disabled' : undefined">
+                    <span class="fa fa-chevron-down" aria-hidden="true"/> <t t-out="o.loadMoreLabel"/>
+                </button>
+            </div>
+        </div>
+    </t>
+
+    <!-- ===================== Map ===================== -->
+    <t t-name="store_locator.MapWidget">
+        <div class="sl-w-map">
+            <div t-ref="map" class="sl-w-map-canvas" role="application" aria-label="Stores map"/>
+        </div>
+    </t>
+
+</templates>

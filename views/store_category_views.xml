@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ======================= Categories ======================= -->
+    <record id="view_store_category_list" model="ir.ui.view">
+        <field name="name">store.category.list</field>
+        <field name="model">store.category</field>
+        <field name="arch" type="xml">
+            <list string="Store Categories" multi_edit="1" sample="1"
+                  decoration-muted="not is_published or not active">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="icon" optional="show"/>
+                <field name="store_count" string="Stores"/>
+                <field name="is_published" widget="boolean_toggle" optional="show"/>
+                <field name="active" widget="boolean_toggle" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_store_category_form" model="ir.ui.view">
+        <field name="name">store.category.form</field>
+        <field name="model">store.category</field>
+        <field name="arch" type="xml">
+            <form string="Store Category">
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Showroom"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="icon" placeholder="fa fa-shopping-bag"/>
+                            <field name="color"/>
+                        </group>
+                        <group>
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="is_published" widget="boolean_toggle"/>
+                            <button name="action_view_stores" type="object"
+                                    class="btn-link" icon="fa-arrow-right">
+                                <span><field name="store_count"/> Stores</span>
+                            </button>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_store_category_search" model="ir.ui.view">
+        <field name="name">store.category.search</field>
+        <field name="model">store.category</field>
+        <field name="arch" type="xml">
+            <search string="Store Categories">
+                <field name="name"/>
+                <filter string="Published" name="published" domain="[('is_published', '=', True)]"/>
+                <filter string="Unpublished" name="unpublished" domain="[('is_published', '=', False)]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter string="Status" name="group_published" context="{'group_by': 'is_published'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_store_category" model="ir.actions.act_window">
+        <field name="name">Categories</field>
+        <field name="res_model">store.category</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add a store category</p>
+            <p>
+                Categories (e.g. Retail Store, Showroom, Service Center, Pickup Point)
+                let visitors filter the store locator.
+            </p>
+        </field>
+    </record>
+
+    <!-- ======================= Tags ======================= -->
+    <record id="view_store_tag_list" model="ir.ui.view">
+        <field name="name">store.tag.list</field>
+        <field name="model">store.tag</field>
+        <field name="arch" type="xml">
+            <list string="Store Tags" multi_edit="1" sample="1"
+                  decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="color"/>
+                <field name="active" widget="boolean_toggle" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_store_tag_form" model="ir.ui.view">
+        <field name="name">store.tag.form</field>
+        <field name="model">store.tag</field>
+        <field name="arch" type="xml">
+            <form string="Store Tag">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="color"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_store_tag" model="ir.actions.act_window">
+        <field name="name">Tags</field>
+        <field name="res_model">store.tag</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add a store tag</p>
+            <p>
+                Tags highlight store services (e.g. Wheelchair Accessible, Parking Available,
+                Open Sunday) on the public locator cards.
+            </p>
+        </field>
+    </record>
+</odoo>

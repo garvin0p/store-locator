@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_store_location_list" model="ir.ui.view">
+        <field name="name">store.location.list</field>
+        <field name="model">store.location</field>
+        <field name="arch" type="xml">
+            <list string="Stores" multi_edit="1" sample="1"
+                  decoration-muted="not is_published or not active"
+                  decoration-info="is_featured and active">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code" optional="show"/>
+                <field name="category_id"/>
+                <field name="city" optional="show"/>
+                <field name="state_id" optional="hide"/>
+                <field name="country_id" optional="show"/>
+                <field name="phone" optional="show"/>
+                <field name="is_featured" widget="boolean_toggle" optional="show"/>
+                <field name="is_published" widget="boolean_toggle" optional="show"/>
+                <field name="website_id" optional="hide" groups="website.group_multi_website"/>
+                <field name="active" widget="boolean_toggle" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_store_location_form" model="ir.ui.view">
+        <field name="name">store.location.form</field>
+        <field name="model">store.location</field>
+        <field name="arch" type="xml">
+            <form string="Store">
+                <header>
+                    <button name="action_open_in_google_maps" type="object"
+                            string="View on Map" icon="fa-map-marker" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_in_google_maps" type="object"
+                                class="oe_stat_button" icon="fa-map-marker" string="Map"/>
+                        <field name="is_published" widget="website_redirect_button"/>
+                    </div>
+                    <field name="image_1920" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Downtown Store"/></h1>
+                    </div>
+                    <group>
+                        <group name="main_info">
+                            <field name="code"/>
+                            <field name="category_id"/>
+                            <field name="sequence"/>
+                            <field name="tag_ids" widget="many2many_tags"
+                                   options="{'color_field': 'color'}" placeholder="Tags..."/>
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="is_published" widget="boolean_toggle"/>
+                            <field name="is_featured" widget="boolean_toggle"/>
+                            <field name="website_id" options="{'no_create': True}" groups="website.group_multi_website"/>
+                            <field name="created_by"/>
+                        </group>
+                        <group name="summary">
+                            <field name="short_description"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Address" name="address">
+                            <group>
+                                <group>
+                                    <field name="street"/>
+                                    <field name="street2"/>
+                                    <field name="city"/>
+                                    <field name="zip"/>
+                                </group>
+                                <group>
+                                    <field name="state_id"/>
+                                    <field name="country_id"/>
+                                    <field name="full_address" widget="url" readonly="1" invisible="not full_address"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Map" name="map">
+                            <group>
+                                <group name="coordinates">
+                                    <field name="latitude"/>
+                                    <field name="longitude"/>
+                                </group>
+                                <group name="maps_links">
+                                    <field name="maps_url_override" placeholder="https://maps.google.com/..."/>
+                                    <field name="google_maps_url" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Opening Hours" name="opening_hours">
+                            <group>
+                                <field name="is_24_hours" string="Open 24/7"/>
+                            </group>
+                            <group invisible="is_24_hours">
+                                <group>
+                                    <field name="mon_hours"/>
+                                    <field name="tue_hours"/>
+                                    <field name="wed_hours"/>
+                                    <field name="thu_hours"/>
+                                </group>
+                                <group>
+                                    <field name="fri_hours"/>
+                                    <field name="sat_hours"/>
+                                    <field name="sun_hours"/>
+                                </group>
+                            </group>
+                            <group invisible="is_24_hours">
+                                <field name="opening_hours" placeholder="Alternative free-text schedule, e.g.:&#10;Mon-Fri: 9:00 - 18:00&#10;Sat: 10:00 - 14:00"/>
+                            </group>
+                        </page>
+                        <page string="Contact" name="contact">
+                            <group>
+                                <group>
+                                    <field name="phone"/>
+                                    <field name="mobile"/>
+                                </group>
+                                <group>
+                                    <field name="email"/>
+                                    <field name="website"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="Rich description shown on the public store page..."/>
+                        </page>
+                        <page string="Gallery" name="gallery">
+                            <group>
+                                <field name="gallery_image_ids" nolabel="1" colspan="2">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="image_1920" widget="image" height="42"/>
+                                        <field name="name" placeholder="Caption (optional)"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <div class="text-muted px-3 pb-2">
+                                Add the photos shown in the gallery of the public store page
+                                (storefront, interior, products, team...). The first image appears
+                                as the large tile of the gallery grid.
+                            </div>
+                        </page>
+                        <page string="Website" name="website_meta">
+                            <group>
+                                <group>
+                                    <field name="website_meta_title"/>
+                                    <field name="website_meta_description"/>
+                                </group>
+                                <group>
+                                    <field name="website_meta_keywords"/>
+                                    <field name="website_meta_og_img"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_store_location_search" model="ir.ui.view">
+        <field name="name">store.location.search</field>
+        <field name="model">store.location</field>
+        <field name="arch" type="xml">
+            <search string="Stores">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="city"/>
+                <field name="zip"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="category_id"/>
+                <filter string="Published" name="published" domain="[('is_published', '=', True)]"/>
+                <filter string="Unpublished" name="unpublished" domain="[('is_published', '=', False)]"/>
+                <filter string="Featured" name="featured" domain="[('is_featured', '=', True)]"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Without Coordinates" name="no_coordinates" domain="['|', ('latitude', '=', 0), ('longitude', '=', 0)]"/>
+                <group>
+                    <filter string="Category" name="group_category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Country" name="group_country" context="{'group_by': 'country_id'}"/>
+                    <filter string="State" name="group_state" context="{'group_by': 'state_id'}"/>
+                    <filter string="City" name="group_city" context="{'group_by': 'city'}"/>
+                    <filter string="Publication" name="group_published" context="{'group_by': 'is_published'}"/>
+                    <filter string="Featured" name="group_featured" context="{'group_by': 'is_featured'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_store_location" model="ir.actions.act_window">
+        <field name="name">Stores</field>
+        <field name="res_model">store.location</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_store_location_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add your first store</p>
+            <p>
+                Create a store, set its category, address and map coordinates, then publish
+                it: it will appear instantly on the public /store-locator page.
+            </p>
+        </field>
+    </record>
+</odoo>

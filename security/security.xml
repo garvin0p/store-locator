@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Odoo 19: groups are organized through res.groups.privilege records,
+         which hold the application category (ir.module.category). -->
+    <record model="ir.module.category" id="module_category_store_locator">
+        <field name="name">Store Locator</field>
+        <field name="description">Access rights for the Store Locator application.</field>
+        <field name="sequence">45</field>
+    </record>
+
+    <record model="res.groups.privilege" id="res_groups_privilege_store_locator">
+        <field name="name">Store Locator</field>
+        <field name="category_id" ref="module_category_store_locator"/>
+    </record>
+
+    <record model="res.groups" id="group_store_user">
+        <field name="name">User</field>
+        <field name="privilege_id" ref="res_groups_privilege_store_locator"/>
+        <field name="implied_ids" eval="[Command.link(ref('base.group_user'))]"/>
+        <field name="comment">Read access to the stores, categories and tags of the Store Locator application.</field>
+    </record>
+
+    <record model="res.groups" id="group_store_manager">
+        <field name="name">Administrator</field>
+        <field name="privilege_id" ref="res_groups_privilege_store_locator"/>
+        <field name="implied_ids" eval="[Command.link(ref('group_store_user'))]"/>
+        <field name="implied_by_ids" eval="[Command.link(ref('base.group_system'))]"/>
+        <field name="user_ids" eval="[Command.link(ref('base.user_root')), Command.link(ref('base.user_admin'))]"/>
+        <field name="comment">Full access to the Store Locator application (create, edit and delete stores, categories and tags).</field>
+    </record>
+
+    <!-- Visitors (public / portal) may only read published stores & categories.
+         The website pages and JSON API additionally whitelist the exposed fields. -->
+    <record id="store_location_rule_public" model="ir.rule">
+        <field name="name">Store Locator: published stores only (public/portal)</field>
+        <field name="model_id" ref="model_store_location"/>
+        <field name="domain_force">[('is_published', '=', True)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_public')), Command.link(ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="store_category_rule_public" model="ir.rule">
+        <field name="name">Store Locator: published categories only (public/portal)</field>
+        <field name="model_id" ref="model_store_category"/>
+        <field name="domain_force">[('is_published', '=', True)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_public')), Command.link(ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

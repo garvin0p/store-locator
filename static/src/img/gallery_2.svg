@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#0ea5e9"/><stop offset="1" stop-color="#1d4ed8"/>
+  </linearGradient></defs>
+  <rect width="640" height="480" fill="url(#g)"/>
+  <rect x="70" y="90" width="500" height="340" rx="14" fill="#f8fafc"/>
+  <g fill="#dbeafe"><rect x="110" y="130" width="180" height="80" rx="8"/><rect x="110" y="230" width="180" height="80" rx="8"/><rect x="110" y="330" width="180" height="70" rx="8"/></g>
+  <g fill="#2563eb"><rect x="130" y="150" width="46" height="40" rx="6"/><rect x="186" y="150" width="46" height="40" rx="6"/><rect x="242" y="150" width="30" height="40" rx="6"/><rect x="130" y="250" width="70" height="40" rx="6"/><rect x="210" y="250" width="46" height="40" rx="6"/><rect x="130" y="344" width="46" height="40" rx="6"/><rect x="186" y="344" width="70" height="40" rx="6"/></g>
+  <g fill="#93c5fd"><rect x="330" y="130" width="200" height="60" rx="8"/><rect x="330" y="210" width="200" height="60" rx="8"/><rect x="330" y="290" width="200" height="60" rx="8"/><rect x="330" y="370" width="200" height="30" rx="8"/></g>
+  <text x="320" y="462" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#ffffff" text-anchor="middle">Sales Floor</text>
+</svg>

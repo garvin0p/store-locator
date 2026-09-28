@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_store_locator_root"
+              name="Store Locator"
+              sequence="65"
+              web_icon="store_locator,static/description/icon.png"
+              groups="store_locator.group_store_manager"/>
+
+    <menuitem id="menu_store_locator_stores"
+              name="Stores"
+              parent="menu_store_locator_root"
+              action="action_store_location"
+              sequence="10"/>
+
+    <menuitem id="menu_store_locator_categories"
+              name="Categories"
+              parent="menu_store_locator_root"
+              action="action_store_category"
+              sequence="20"/>
+
+    <menuitem id="menu_store_locator_tags"
+              name="Tags"
+              parent="menu_store_locator_root"
+              action="action_store_tag"
+              sequence="30"/>
+
+    <menuitem id="menu_store_locator_settings"
+              name="Settings"
+              parent="menu_store_locator_root"
+              action="action_store_locator_settings"
+              groups="store_locator.group_store_manager"
+              sequence="90"/>
+</odoo>

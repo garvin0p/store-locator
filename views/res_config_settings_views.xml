@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.store_locator</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <app data-string="Store Locator" string="Store Locator"
+                         name="store_locator"
+                         logo="/store_locator/static/description/icon.png">
+                        <block title="Map" name="store_locator_map_container">
+                            <setting id="store_locator_default_center_setting" string="Default Map Center">
+                                <div class="content-group">
+                                    <div class="row mt8">
+                                        <label for="store_locator_default_latitude" class="col-lg-3 o_light_label"/>
+                                        <field name="store_locator_default_latitude" id="store_locator_default_latitude" digits="(10, 7)"/>
+                                    </div>
+                                    <div class="row">
+                                        <label for="store_locator_default_longitude" class="col-lg-3 o_light_label"/>
+                                        <field name="store_locator_default_longitude" id="store_locator_default_longitude" digits="(10, 7)"/>
+                                    </div>
+                                    <div class="row">
+                                        <label for="store_locator_default_zoom" class="col-lg-3 o_light_label"/>
+                                        <field name="store_locator_default_zoom" id="store_locator_default_zoom"/>
+                                    </div>
+                                </div>
+                            </setting>
+                            <setting id="store_locator_map_provider_setting" string="Map Provider">
+                                <field name="store_locator_map_provider" class="w-auto"/>
+                                <div class="mt8" invisible="store_locator_map_provider != 'google'">
+                                    <label for="store_locator_google_maps_api_key" class="o_light_label"/>
+                                    <field name="store_locator_google_maps_api_key" password="True" class="w-auto"/>
+                                    <div class="text-muted">
+                                        The key is stored server-side and is never sent to the public frontend.
+                                    </div>
+                                </div>
+                                <div class="mt8">
+                                    <field name="store_locator_osm_enabled"/>
+                                    <label for="store_locator_osm_enabled">Enable OpenStreetMap tiles</label>
+                                </div>
+                            </setting>
+                        </block>
+                        <block title="Search and Distance" name="store_locator_search_container">
+                            <setting id="store_locator_geolocation_setting" string="Geolocation">
+                                <field name="store_locator_enable_geolocation"/>
+                                <label for="store_locator_enable_geolocation">Show the "Use My Location" button</label>
+                            </setting>
+                            <setting id="store_locator_distance_setting" string="Distance">
+                                <field name="store_locator_enable_distance"/>
+                                <label for="store_locator_enable_distance">Calculate and display distances (Haversine)</label>
+                                <div class="content-group mt8">
+                                    <div class="row">
+                                        <label for="store_locator_default_radius" class="col-lg-3 o_light_label"/>
+                                        <field name="store_locator_default_radius" id="store_locator_default_radius"/>
+                                        <span class="text-muted">km — radius used by the public distance filter</span>
+                                    </div>
+                                </div>
+                            </setting>
+                            <setting id="store_locator_pagination_setting" string="Pagination">
+                                <div class="content-group">
+                                    <div class="row">
+                                        <label for="store_locator_stores_per_page" class="col-lg-3 o_light_label"/>
+                                        <field name="store_locator_stores_per_page" id="store_locator_stores_per_page"/>
+                                        <span class="text-muted">stores loaded per page on the public locator</span>
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

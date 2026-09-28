@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Website Builder integration (Odoo 19).
+
+        We expose the Featured Stores snippet through a dedicated controller
+        route (/store-locator/snippet/featured) so it can be embedded via
+        an <iframe> on any website page. To insert it on a page:
+
+        1. Open Website -> Edit
+        2. Drag a "Text Block" or "Code" block where you want the stores
+        3. Insert the following HTML:
+           <iframe src="/store-locator/snippet/featured?limit=4"
+                   style="width:100%;height:500px;border:0;"
+                   loading="lazy" title="Featured Stores"></iframe>
+
+        Or use the dedicated "Store Locator" link in the website top menu
+        to access the full interactive locator page.
+    -->
+
+    <!-- Register the Featured Stores snippet as an ir.ui.view so it can be
+         called via t-call from other templates, and rendered standalone via
+         the controller endpoint. -->
+    <record id="snippet_featured_stores" model="ir.ui.view">
+        <field name="name">Featured Stores Snippet</field>
+        <field name="key">store_locator.snippet_featured_stores</field>
+        <field name="type">qweb</field>
+        <field name="arch" type="xml">
+            <t t-name="store_locator.snippet_featured_stores">
+                <section class="store-locator-featured-snippet">
+                    <div class="container">
+                        <h2 class="text-center mb-4">Featured Stores</h2>
+                        <div class="store-locator-featured-grid">
+                            <t t-foreach="stores" t-as="store" t-key="store.id">
+                                <a class="store-locator-featured-card text-decoration-none"
+                                   t-att-href="'/%s/store/%s' % (listing_slug, store.id)">
+                                    <img t-if="store.image_1920"
+                                         t-att-src="'/web/image/store.location/%s/image_1920' % store.id"
+                                         t-att-alt="store.name"/>
+                                    <div class="store-locator-featured-body">
+                                        <h4 t-out="store.name"/>
+                                        <p t-if="store.short_description" t-out="store.short_description"/>
+                                        <p t-if="store.city">
+                                            <i class="fa fa-map-marker"/>
+                                            <t t-out="store.city"/>
+                                            <t t-if="store.country_id">, <t t-out="store.country_id.name"/></t>
+                                        </p>
+                                        <span class="store-locator-featured-link">View Details &#8594;</span>
+                                    </div>
+                                </a>
+                            </t>
+                        </div>
+                        <div class="text-center mt-4">
+                            <a class="btn btn-primary" t-att-href="'/%s' % listing_slug">View All Stores</a>
+                        </div>
+                    </div>
+                </section>
+            </t>
+        </field>
+    </record>
+</odoo>

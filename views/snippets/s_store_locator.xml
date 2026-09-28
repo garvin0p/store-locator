@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================ -->
+    <!-- Website Builder blocks. Drag them from Website > Edit > Blocks  -->
+    <!-- > "Store Locator" onto any page. Every option lives in the      -->
+    <!-- builder sidebar (see static/src/website_builder).               -->
+    <!-- ================================================================ -->
+
+    <!-- Hero band: a regular, fully editable section (text, background,  -->
+    <!-- gradient, spacing...). The locator block below overlaps it.      -->
+    <template id="s_store_locator_hero" name="Store Locator Hero">
+        <section class="s_store_locator_hero o_colored_level pt64 pb80"
+                 style="background-image: linear-gradient(120deg, rgb(15, 44, 107) 0%, rgb(37, 99, 235) 55%, rgb(59, 130, 246) 100%);">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2 text-center">
+                        <h1 class="display-5 text-white">Store Locator</h1>
+                        <p class="lead text-white mb-0">Find your nearest store: addresses, opening hours and directions.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <!-- Interactive locator: search, filters, store list and map. The    -->
+    <!-- app is mounted at runtime by the "store_locator.snippet"         -->
+    <!-- interaction; the skeleton below is what the editor stores and    -->
+    <!-- what shows while loading / in the "Add block" dialog.            -->
+    <template id="s_store_locator" name="Store Locator (Classic)">
+        <section class="s_store_locator s_store_locator_overlap o_colored_level pt0 pb48"
+                 data-layout="list-map">
+            <div class="container">
+                <div class="s_store_locator_app o_not_editable" contenteditable="false">
+                <div class="sl-skeleton" aria-hidden="true">
+                    <div class="sl-skel-toolbar">
+                        <span class="sl-skel-search"><span class="fa fa-search"/> Search by name, city, street or ZIP...</span>
+                        <span class="sl-skel-pill"/>
+                    </div>
+                    <div class="sl-skel-layout">
+                        <div class="sl-skel-side">
+                            <span class="sl-skel-line sl-skel-line-sm"/>
+                            <div class="sl-skel-chips"><span/><span/><span/></div>
+                            <div class="sl-skel-card"><span class="sl-skel-thumb"/><span class="sl-skel-lines"><span/><span/><span/></span></div>
+                            <div class="sl-skel-card"><span class="sl-skel-thumb"/><span class="sl-skel-lines"><span/><span/><span/></span></div>
+                            <div class="sl-skel-card"><span class="sl-skel-thumb"/><span class="sl-skel-lines"><span/><span/><span/></span></div>
+                        </div>
+                        <div class="sl-skel-map">
+                            <span class="sl-skel-pin" style="left: 28%; top: 38%;"/>
+                            <span class="sl-skel-pin" style="left: 52%; top: 30%;"/>
+                            <span class="sl-skel-pin sl-skel-pin-alt" style="left: 64%; top: 55%;"/>
+                            <span class="sl-skel-pin" style="left: 40%; top: 62%;"/>
+                            <span class="sl-skel-caption"><span class="fa fa-map-marker"/> Store Locator</span>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    
+    <!-- Register the blocks in the builder under a "Store Locator" group -->
+    <template id="snippets" inherit_id="website.snippets" name="Store Locator Snippets">
+        <xpath expr="//t[@id='installed_snippets_hook']" position="after">
+            <t snippet-group="store_locator" t-snippet="website.s_snippet_group" string="Store Locator"
+               t-thumbnail="/store_locator/static/src/img/snippets_thumbs/s_store_locator.svg"/>
+        </xpath>
+        <xpath expr="//snippets[@id='snippet_structure']" position="inside">
+            <t t-snippet="store_locator.s_store_locator" string="Store Locator (Classic)" group="store_locator">
+                <keywords>store, shop, locator, map, finder, branches, locations, near me, directions, outlets, classic</keywords>
+            </t>
+            <t t-snippet="store_locator.s_store_locator_hero" string="Store Locator Hero" group="store_locator">
+                <keywords>store, locator, hero, banner, header, title</keywords>
+            </t>
+        </xpath>
+    </template>
+</odoo>

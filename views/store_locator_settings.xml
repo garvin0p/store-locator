@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_store_locator" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.store_locator</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Store Locator" string="Store Locator" name="store_locator">
+                    <block title="Map">
+                        <setting string="Default Map Center" help="Initial position of the map when no store matches and geolocation is unavailable.">
+                            <div class="content-group">
+                                <div class="row mt8">
+                                    <label for="store_locator_default_lat" class="col-lg-3 o_light_label" string="Latitude"/>
+                                    <field name="store_locator_default_lat"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="store_locator_default_lng" class="col-lg-3 o_light_label" string="Longitude"/>
+                                    <field name="store_locator_default_lng"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="store_locator_default_zoom" class="col-lg-3 o_light_label" string="Zoom"/>
+                                    <field name="store_locator_default_zoom"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Map Provider" help="Engine used by the interactive map. OpenStreetMap is free and requires no key.">
+                            <field name="store_locator_map_provider" widget="radio" options="{'horizontal': true}"/>
+                            <div class="row mt8" invisible="store_locator_map_provider != 'google'">
+                                <label for="store_locator_google_maps_api_key" class="col-lg-3 o_light_label" string="API Key"/>
+                                <field name="store_locator_google_maps_api_key" password="True"/>
+                            </div>
+                        </setting>
+                        <setting string="OpenStreetMap Tiles" help="Allow the free OpenStreetMap tiles. Disable it to force a Google Maps key.">
+                            <field name="store_locator_enable_osm"/>
+                        </setting>
+                    </block>
+                    <block title="Locator Options">
+                        <setting string="Geolocation" help="Ask visitors for their browser location to compute distances. Visitor positions are never stored.">
+                            <field name="store_locator_enable_geolocation"/>
+                        </setting>
+                        <setting string="Distance" help="Show the distance to each store and let visitors sort by distance.">
+                            <field name="store_locator_enable_distance"/>
+                        </setting>
+                        <setting string="Default Search Radius" help="Preselected radius (km) of the 'distance from me' filter.">
+                            <div class="content-group">
+                                <div class="row mt8">
+                                    <label for="store_locator_search_radius" class="col-lg-3 o_light_label" string="Radius (km)"/>
+                                    <field name="store_locator_search_radius"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Stores Per Page" help="Number of stores returned per page by the public API (1 to 48).">
+                            <div class="content-group">
+                                <div class="row mt8">
+                                    <label for="store_locator_stores_per_page" class="col-lg-3 o_light_label" string="Per Page"/>
+                                    <field name="store_locator_stores_per_page"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Design">
+                        <setting string="Colors" help="Default colors of the store locator blocks and store pages. Each block can override them from the Website editor.">
+                            <div class="content-group">
+                                <div class="row mt8">
+                                    <label for="store_locator_primary_color" class="col-lg-3 o_light_label" string="Main"/>
+                                    <field name="store_locator_primary_color" widget="color"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="store_locator_accent_color" class="col-lg-3 o_light_label" string="Featured"/>
+                                    <field name="store_locator_accent_color" widget="color"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Store Locator Page" help="The /store-locator page is a normal website page: edit it with Website > Edit, or build your own page with the Store Locator blocks.">
+                            <div class="mt8">
+                                <button name="%(website.action_website_pages_list)d" type="action" string="Manage website pages" icon="oi-arrow-right" class="btn-link"/>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_store_locator_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

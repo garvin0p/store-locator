@@ -1,0 +1,912 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<!-- Classic all-in-one block (version 2.0) -->
+<t t-name="store_locator.StoreLocatorOption">
+    <BuilderRow label.translate="Layout">
+        <BuilderSelect dataAttributeAction="'layout'">
+            <BuilderSelectItem dataAttributeActionValue="'list-map'">List + Map</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'map-list'">Map + List</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'map-top'">Map on Top</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'list'">List Only</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'map'">Map Only</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Height" tooltip.translate="Height of the store list and map. Leave empty to fit the screen.">
+        <BuilderNumberInput styleAction="'--sl-height'" unit="'px'" min="320" max="1400" step="20" default="null"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Overlap Block Above" tooltip.translate="Pull the search bar up over the previous block (hero banner).">
+        <BuilderCheckbox classAction="'s_store_locator_overlap'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Main Color">
+        <BuilderColorPicker styleAction="'--sl-primary'" noTransparency="true" enabledTabs="['solid', 'custom']"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Featured Color">
+        <BuilderColorPicker styleAction="'--sl-accent'" noTransparency="true" enabledTabs="['solid', 'custom']"/>
+    </BuilderRow>
+
+    <!-- Which stores -->
+    <BuilderRow label.translate="Categories" tooltip.translate="Only show stores of these categories. Leave empty for all.">
+        <BuilderMany2Many model="'store.category'" dataAttributeAction="'categoryIds'" limit="10"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Featured Stores Only">
+        <BuilderCheckbox dataAttributeAction="'featuredOnly'" dataAttributeActionValue="'true'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Stores per Page" tooltip.translate="Leave empty to use the value of the Store Locator settings.">
+        <BuilderNumberInput dataAttributeAction="'perPage'" min="1" max="48" default="null"/>
+    </BuilderRow>
+
+    <!-- Search bar -->
+    <BuilderRow label.translate="Search Bar">
+        <BuilderCheckbox id="'sl_search_opt'" dataAttributeAction="'hideSearch'" dataAttributeActionValue="'true'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Placeholder" level="1" t-if="isActiveItem('sl_search_opt')">
+        <BuilderTextInput dataAttributeAction="'searchPlaceholder'" placeholder.translate="Search by name, city, street or ZIP..."/>
+    </BuilderRow>
+    <BuilderRow label.translate="Use My Location">
+        <BuilderCheckbox dataAttributeAction="'hideGeolocation'" dataAttributeActionValue="'true'" inverseAction="true"/>
+    </BuilderRow>
+
+    <!-- Filters -->
+    <BuilderRow label.translate="Filters">
+        <BuilderCheckbox id="'sl_filters_opt'" dataAttributeAction="'hideFilters'" dataAttributeActionValue="'true'" inverseAction="true"/>
+    </BuilderRow>
+    <t t-if="isActiveItem('sl_filters_opt')">
+        <BuilderRow label.translate="Open by Default" level="1">
+            <BuilderCheckbox dataAttributeAction="'filtersCollapsed'" dataAttributeActionValue="'true'" inverseAction="true"/>
+        </BuilderRow>
+        <BuilderRow label.translate="Category Chips" level="1">
+            <BuilderCheckbox dataAttributeAction="'hideCategories'" dataAttributeActionValue="'true'" inverseAction="true"/>
+        </BuilderRow>
+        <BuilderRow label.translate="Country / State" level="1">
+            <BuilderCheckbox dataAttributeAction="'hideRegion'" dataAttributeActionValue="'true'" inverseAction="true"/>
+        </BuilderRow>
+        <BuilderRow label.translate="ZIP Code" level="1">
+            <BuilderCheckbox dataAttributeAction="'hideZip'" dataAttributeActionValue="'true'" inverseAction="true"/>
+        </BuilderRow>
+        <BuilderRow label.translate="Distance" level="1">
+            <BuilderCheckbox dataAttributeAction="'hideRadius'" dataAttributeActionValue="'true'" inverseAction="true"/>
+        </BuilderRow>
+        <BuilderRow label.translate="Featured Toggle" level="1">
+            <BuilderCheckbox dataAttributeAction="'hideFeaturedToggle'" dataAttributeActionValue="'true'" inverseAction="true"/>
+        </BuilderRow>
+    </t>
+
+    <!-- Store cards -->
+    <BuilderRow label.translate="Card Image">
+        <BuilderCheckbox dataAttributeAction="'hideImages'" dataAttributeActionValue="'true'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Card Tags">
+        <BuilderCheckbox dataAttributeAction="'hideTags'" dataAttributeActionValue="'true'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Details Button">
+        <BuilderCheckbox dataAttributeAction="'hideDetails'" dataAttributeActionValue="'true'" inverseAction="true"/>
+    </BuilderRow>
+</t>
+
+<!-- ================================================================ -->
+<!-- Shared option rows                                               -->
+<!-- ================================================================ -->
+<t t-name="store_locator.CardDesignRows">
+    <BuilderRow label.translate="Card Style">
+        <BuilderSelect applyTo="'.sl-card-tpl .sl-tcard'">
+            <BuilderSelectItem classAction="'sl-tcard-h'">Image Left</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-tcard-v'">Image Top</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-tcard-overlay'">Text on Image</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-tcard-minimal'">Minimal (no box)</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Card Look">
+        <BuilderSelect>
+            <BuilderSelectItem classAction="''">Border + Shadow</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-look-flat'">Flat</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-look-outline'">Outline</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-look-float'">Floating</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Card Background">
+        <BuilderColorPicker styleAction="'--sl-card-bg'" enabledTabs="['solid', 'custom', 'gradient']"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Card Corners">
+        <BuilderNumberInput styleAction="'--sl-card-radius'" unit="'px'" min="0" max="40" default="null"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Image Size" tooltip.translate="Width of the image (Image Left) or height (Image Top).">
+        <BuilderNumberInput styleAction="'--sl-tcard-img'" unit="'px'" min="40" max="480" default="null"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Title Color">
+        <BuilderColorPicker styleAction="'--sl-card-title'" enabledTabs="['solid', 'custom']"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Card Parts" tooltip.translate="Toggle parts on / off. Drag parts inside the card to reorder them; click a text or button in the card to restyle or rename it.">
+        <div class="d-flex gap-1">
+            <BuilderButton action="'slCardPart'" actionParam="'image'" title.translate="Image"><i class="fa fa-picture-o"/></BuilderButton>
+            <BuilderButton action="'slCardPart'" actionParam="'name'" title.translate="Name"><i class="fa fa-header"/></BuilderButton>
+            <BuilderButton action="'slCardPart'" actionParam="'category'" title.translate="Category"><i class="fa fa-tag"/></BuilderButton>
+            <BuilderButton action="'slCardPart'" actionParam="'description'" title.translate="Short description"><i class="fa fa-align-left"/></BuilderButton>
+        </div>
+    </BuilderRow>
+    <BuilderRow label="''" level="1">
+        <div class="d-flex gap-1">
+            <BuilderButton action="'slCardPart'" actionParam="'address'" title.translate="Address"><i class="fa fa-map-marker"/></BuilderButton>
+            <BuilderButton action="'slCardPart'" actionParam="'city'" title.translate="City"><i class="fa fa-building-o"/></BuilderButton>
+            <BuilderButton action="'slCardPart'" actionParam="'distance'" title.translate="Distance"><i class="fa fa-road"/></BuilderButton>
+            <BuilderButton action="'slCardPart'" actionParam="'tags'" title.translate="Tags"><i class="fa fa-tags"/></BuilderButton>
+        </div>
+    </BuilderRow>
+    <BuilderRow label="''" level="1">
+        <div class="d-flex gap-1">
+            <BuilderButton action="'slCardPart'" actionParam="'phone'" title.translate="Phone number"><i class="fa fa-phone"/></BuilderButton>
+            <BuilderButton action="'slCardPart'" actionParam="'email'" title.translate="Email address"><i class="fa fa-envelope"/></BuilderButton>
+            <BuilderButton action="'slCardPart'" actionParam="'hours_today'" title.translate="Today's hours"><i class="fa fa-clock-o"/></BuilderButton>
+            <BuilderButton action="'slCardPart'" actionParam="'featured'" title.translate="Featured badge"><i class="fa fa-star"/></BuilderButton>
+        </div>
+    </BuilderRow>
+    <BuilderRow label="''" level="1">
+        <div class="d-flex gap-1">
+            <BuilderButton action="'slCardPart'" actionParam="'open24'" title.translate="Open 24/7 badge"><i class="fa fa-moon-o"/></BuilderButton>
+        </div>
+    </BuilderRow>
+    <BuilderRow label.translate="Card Buttons">
+        <div class="d-flex gap-1">
+            <BuilderButton action="'slCardPart'" actionParam="'link:detail'" title.translate="Details button"><i class="fa fa-arrow-right"/></BuilderButton>
+            <BuilderButton action="'slCardPart'" actionParam="'link:directions'" title.translate="Directions"><i class="fa fa-location-arrow"/></BuilderButton>
+            <BuilderButton action="'slCardPart'" actionParam="'link:phone'" title.translate="Call"><i class="fa fa-phone"/></BuilderButton>
+            <BuilderButton action="'slCardPart'" actionParam="'link:email'" title.translate="Email"><i class="fa fa-envelope"/></BuilderButton>
+            <BuilderButton action="'slCardPart'" actionParam="'link:website'" title.translate="Website"><i class="fa fa-globe"/></BuilderButton>
+        </div>
+    </BuilderRow>
+</t>
+
+<t t-name="store_locator.ColorRows">
+    <BuilderRow label.translate="Main Color">
+        <BuilderColorPicker styleAction="'--sl-primary'" noTransparency="true" enabledTabs="['solid', 'custom']"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Featured Color">
+        <BuilderColorPicker styleAction="'--sl-accent'" noTransparency="true" enabledTabs="['solid', 'custom']"/>
+    </BuilderRow>
+</t>
+
+<!-- ================================================================ -->
+<!-- Store Locator section (composable)                               -->
+<!-- ================================================================ -->
+<t t-name="store_locator.StoreFinderOption">
+    <BuilderRow label.translate="Categories" tooltip.translate="Only show stores of these categories. Leave empty for all.">
+        <BuilderMany2Many model="'store.category'" dataAttributeAction="'categoryIds'" limit="10"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Tags" tooltip.translate="Only show stores with one of these tags. Leave empty for all.">
+        <BuilderMany2Many model="'store.tag'" dataAttributeAction="'tagIds'" limit="10"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Featured Stores Only">
+        <BuilderCheckbox dataAttributeAction="'featuredOnly'" dataAttributeActionValue="'true'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Stores per Page" tooltip.translate="Leave empty to use the Store Locator settings.">
+        <BuilderNumberInput dataAttributeAction="'perPage'" min="1" max="48" default="null"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Order">
+        <BuilderSelect dataAttributeAction="'order'">
+            <BuilderSelectItem dataAttributeActionValue="''">Featured first</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'name'">Name</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'latest'">Newest first</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'sequence'">Manual sequence</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Overlap Block Above" tooltip.translate="Pull the first row over the previous block (hero banner).">
+        <BuilderCheckbox classAction="'s_store_locator_overlap'"/>
+    </BuilderRow>
+    <t t-call="store_locator.ColorRows"/>
+</t>
+
+<!-- ================================================================ -->
+<!-- Store Search                                                     -->
+<!-- ================================================================ -->
+<t t-name="store_locator.SearchOption">
+    <BuilderRow label.translate="Placeholder">
+        <BuilderTextInput dataAttributeAction="'placeholder'" placeholder.translate="Search by name, city, street or ZIP..."/>
+    </BuilderRow>
+    <BuilderRow label.translate="Search Icon">
+        <BuilderCheckbox dataAttributeAction="'hideIcon'" dataAttributeActionValue="'true'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Search Button">
+        <BuilderCheckbox id="'sl_search_btn'" dataAttributeAction="'showButton'" dataAttributeActionValue="'true'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Button Text" level="1" t-if="isActiveItem('sl_search_btn')">
+        <BuilderTextInput dataAttributeAction="'buttonLabel'" placeholder.translate="Search"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Use My Location">
+        <BuilderCheckbox id="'sl_search_loc'" dataAttributeAction="'hideLocate'" dataAttributeActionValue="'true'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Button Text" level="1" t-if="isActiveItem('sl_search_loc')">
+        <BuilderTextInput dataAttributeAction="'locateLabel'" placeholder.translate="Use my location"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Sort Menu" tooltip.translate="Shown once the visitor shared the location.">
+        <BuilderCheckbox dataAttributeAction="'hideSort'" dataAttributeActionValue="'true'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Shape">
+        <BuilderSelect>
+            <BuilderSelectItem classAction="''">Pill</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-shape-rounded'">Rounded</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-shape-square'">Square</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-shape-line'">Underline</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Size">
+        <BuilderButtonGroup>
+            <BuilderButton classAction="'sl-size-sm'">S</BuilderButton>
+            <BuilderButton classAction="''">M</BuilderButton>
+            <BuilderButton classAction="'sl-size-lg'">L</BuilderButton>
+        </BuilderButtonGroup>
+    </BuilderRow>
+    <BuilderRow label.translate="Field Color">
+        <BuilderColorPicker styleAction="'--sl-input-bg'" enabledTabs="['solid', 'custom']"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Border Color">
+        <BuilderColorPicker styleAction="'--sl-input-border'" enabledTabs="['solid', 'custom']"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Standalone: Go To" tooltip.translate="When this search box is not in a Store Locator section (e.g. on the homepage), pressing Enter opens this page with the search.">
+        <BuilderTextInput dataAttributeAction="'targetUrl'" placeholder="/store-locator"/>
+    </BuilderRow>
+</t>
+
+<!-- ================================================================ -->
+<!-- Store Filter                                                     -->
+<!-- ================================================================ -->
+<t t-name="store_locator.FilterOption">
+    <BuilderRow label.translate="Filter">
+        <BuilderSelect action="'slFilterType'">
+            <BuilderSelectItem id="'ft_category'" actionValue="'category'">Category</BuilderSelectItem>
+            <BuilderSelectItem id="'ft_tags'" actionValue="'tags'">Tags / Services</BuilderSelectItem>
+            <BuilderSelectItem id="'ft_country'" actionValue="'country'">Country</BuilderSelectItem>
+            <BuilderSelectItem id="'ft_state'" actionValue="'state'">State / Province</BuilderSelectItem>
+            <BuilderSelectItem id="'ft_zip'" actionValue="'zip'">ZIP Code</BuilderSelectItem>
+            <BuilderSelectItem id="'ft_radius'" actionValue="'radius'">Distance</BuilderSelectItem>
+            <BuilderSelectItem id="'ft_featured'" actionValue="'featured'">Featured Only</BuilderSelectItem>
+            <BuilderSelectItem id="'ft_open24'" actionValue="'open24'">Open 24/7 Only</BuilderSelectItem>
+            <BuilderSelectItem id="'ft_sort'" actionValue="'sort'">Sort Order</BuilderSelectItem>
+            <BuilderSelectItem id="'ft_clear'" actionValue="'clear'">Clear Button</BuilderSelectItem>
+            <BuilderSelectItem id="'ft_count'" actionValue="'count'">Result Count</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Display" t-if="isActiveItem('ft_category') or isActiveItem('ft_tags')">
+        <BuilderSelect dataAttributeAction="'display'">
+            <BuilderSelectItem dataAttributeActionValue="'chips'">Chips</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'select'">Dropdown</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'radio'">Radio List</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'checkbox'">Checkbox List</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Display" t-if="isActiveItem('ft_country') or isActiveItem('ft_state') or isActiveItem('ft_radius') or isActiveItem('ft_sort')">
+        <BuilderSelect dataAttributeAction="'display'">
+            <BuilderSelectItem dataAttributeActionValue="'select'">Dropdown</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'chips'">Chips</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'radio'">Radio List</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Display" t-if="isActiveItem('ft_featured') or isActiveItem('ft_open24')">
+        <BuilderSelect dataAttributeAction="'display'">
+            <BuilderSelectItem dataAttributeActionValue="'switch'">Toggle Switch</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'checkbox'">Checkbox</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'button'">Button</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="'All' Text" t-if="isActiveItem('ft_category') or isActiveItem('ft_tags') or isActiveItem('ft_country') or isActiveItem('ft_state') or isActiveItem('ft_radius')">
+        <BuilderTextInput dataAttributeAction="'allLabel'" placeholder.translate="All"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Placeholder" t-if="isActiveItem('ft_zip')">
+        <BuilderTextInput dataAttributeAction="'placeholder'" placeholder.translate="e.g. 78701"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Button Text" t-if="isActiveItem('ft_clear') or isActiveItem('ft_featured') or isActiveItem('ft_open24')">
+        <BuilderTextInput dataAttributeAction="'buttonLabel'" placeholder.translate="Clear filters"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Label" tooltip.translate="Click the label in the page to rename it.">
+        <BuilderCheckbox classAction="'sl-filter-nolabel'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Label Beside" tooltip.translate="Label and control on one line.">
+        <BuilderCheckbox classAction="'sl-filter-inline'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Chip Style">
+        <BuilderSelect>
+            <BuilderSelectItem classAction="''">Soft</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-chips-outline'">Outline</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-chips-solid'">Solid</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-chips-square'">Square</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Toggle Color">
+        <BuilderColorPicker styleAction="'--sl-toggle-on'" enabledTabs="['solid', 'custom']"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Width">
+        <BuilderSelect>
+            <BuilderSelectItem classAction="''">Auto</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-w-full'">Full Width</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-w-grow'">Fill Space (in a row)</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+</t>
+
+<!-- ================================================================ -->
+<!-- Filter Panel (container)                                         -->
+<!-- ================================================================ -->
+<t t-name="store_locator.FilterPanelOption">
+    <BuilderRow label.translate="Layout">
+        <BuilderSelect>
+            <BuilderSelectItem classAction="'sl-fpanel-v'">Stacked</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-fpanel-v sl-fpanel-grid2'">Two Columns</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-fpanel-h'">In a Row</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Style">
+        <BuilderSelect>
+            <BuilderSelectItem classAction="''">Card</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-fpanel-bar'">Toolbar</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-fpanel-plain'">Plain</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Title" tooltip.translate="Click the title in the page to rename it.">
+        <BuilderCheckbox id="'sl_fp_title'" classAction="'sl-fpanel-notitle'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Collapsible" t-if="isActiveItem('sl_fp_title')">
+        <BuilderCheckbox id="'sl_fp_collapse'" classAction="'sl-fpanel-collapsible'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Closed at Start" level="1" t-if="isActiveItem('sl_fp_title') and isActiveItem('sl_fp_collapse')">
+        <BuilderCheckbox classAction="'sl-fpanel-start-collapsed'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Closed on Mobile" level="1" t-if="isActiveItem('sl_fp_title') and isActiveItem('sl_fp_collapse')">
+        <BuilderCheckbox classAction="'sl-fpanel-mobile-collapsed'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Sticky">
+        <BuilderCheckbox classAction="'sl-sticky'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Background">
+        <BuilderColorPicker styleAction="'--sl-fpanel-bg'" enabledTabs="['solid', 'custom', 'gradient']"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Spacing">
+        <BuilderNumberInput styleAction="'--sl-fpanel-gap'" unit="'px'" min="0" max="48" default="null"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Corners">
+        <BuilderNumberInput styleAction="'--sl-fpanel-radius'" unit="'px'" min="0" max="40" default="null"/>
+    </BuilderRow>
+</t>
+
+<!-- ================================================================ -->
+<!-- Store List                                                       -->
+<!-- ================================================================ -->
+<t t-name="store_locator.ListOption">
+    <BuilderRow label.translate="Layout">
+        <BuilderSelect dataAttributeAction="'layout'">
+            <BuilderSelectItem id="'sl_list_list'" dataAttributeActionValue="'list'">List</BuilderSelectItem>
+            <BuilderSelectItem id="'sl_list_grid'" dataAttributeActionValue="'grid'">Grid</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Columns" level="1" t-if="isActiveItem('sl_list_grid')">
+        <BuilderButtonGroup>
+            <BuilderButton classAction="'sl-cols-1'">1</BuilderButton>
+            <BuilderButton classAction="'sl-cols-2'">2</BuilderButton>
+            <BuilderButton classAction="'sl-cols-3'">3</BuilderButton>
+            <BuilderButton classAction="'sl-cols-4'">4</BuilderButton>
+        </BuilderButtonGroup>
+    </BuilderRow>
+    <BuilderRow label.translate="Scrollable">
+        <BuilderCheckbox id="'sl_list_scroll'" dataAttributeAction="'noScroll'" dataAttributeActionValue="'true'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Height" level="1" t-if="isActiveItem('sl_list_scroll')">
+        <BuilderNumberInput styleAction="'--sl-list-h'" unit="'px'" min="240" max="1600" step="20" default="null"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Result Count">
+        <BuilderCheckbox dataAttributeAction="'hideHeader'" dataAttributeActionValue="'true'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Card Click">
+        <BuilderSelect dataAttributeAction="'cardClick'" applyTo="'.sl-card-tpl'">
+            <BuilderSelectItem dataAttributeActionValue="'select'">Show on Map</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'detail'">Open Store Page</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'none'">Nothing</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <t t-call="store_locator.CardDesignRows"/>
+    <BuilderRow label.translate="Selected Card">
+        <BuilderColorPicker styleAction="'--sl-card-selected'" enabledTabs="['solid', 'custom']"/>
+    </BuilderRow>
+    <BuilderRow label.translate="'Load More' Text">
+        <BuilderTextInput dataAttributeAction="'loadMoreLabel'" placeholder.translate="Load more stores"/>
+    </BuilderRow>
+    <BuilderRow label.translate="No Result Title">
+        <BuilderTextInput dataAttributeAction="'emptyTitle'" placeholder.translate="No stores found"/>
+    </BuilderRow>
+    <BuilderRow label.translate="No Result Text">
+        <BuilderTextInput dataAttributeAction="'emptyText'" placeholder.translate="Try a different search..."/>
+    </BuilderRow>
+</t>
+
+<!-- A button / link inside a card design -->
+<t t-name="store_locator.CardLinkOption">
+    <BuilderRow label.translate="Opens">
+        <BuilderSelect dataAttributeAction="'slLink'">
+            <BuilderSelectItem dataAttributeActionValue="'detail'">Store Page</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'directions'">Directions</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'phone'">Call</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'email'">Email</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'website'">Store Website</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'map'">Show on Map</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+</t>
+
+<!-- ================================================================ -->
+<!-- Store Map                                                        -->
+<!-- ================================================================ -->
+<t t-name="store_locator.MapOption">
+    <BuilderRow label.translate="Height">
+        <BuilderNumberInput styleAction="'--sl-map-h'" unit="'px'" min="240" max="1600" step="20" default="null"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Sticky" tooltip.translate="The map stays visible while scrolling the store list.">
+        <BuilderCheckbox dataAttributeAction="'sticky'" dataAttributeActionValue="'true'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Map Theme">
+        <BuilderSelect dataAttributeAction="'tiles'">
+            <BuilderSelectItem dataAttributeActionValue="'osm'">OpenStreetMap</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'voyager'">Voyager</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'light'">Light</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'dark'">Dark</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Corners">
+        <BuilderNumberInput styleAction="'--sl-map-radius'" unit="'px'" min="0" max="40" default="null"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Zoom with Wheel">
+        <BuilderCheckbox dataAttributeAction="'scrollZoom'" dataAttributeActionValue="'true'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Max Zoom on Results">
+        <BuilderNumberInput dataAttributeAction="'fitMaxZoom'" min="3" max="19" default="15"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Marker Style">
+        <BuilderSelect dataAttributeAction="'markerStyle'">
+            <BuilderSelectItem dataAttributeActionValue="'pin'">Pin</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'circle'">Circle</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'dot'">Dot</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'icon'">Category Icon</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'image'">Store Photo</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'label'">Store Name Label</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Marker Size">
+        <BuilderButtonGroup dataAttributeAction="'markerSize'">
+            <BuilderButton dataAttributeActionValue="'small'">S</BuilderButton>
+            <BuilderButton dataAttributeActionValue="'medium'">M</BuilderButton>
+            <BuilderButton dataAttributeActionValue="'large'">L</BuilderButton>
+        </BuilderButtonGroup>
+    </BuilderRow>
+    <BuilderRow label.translate="Marker">
+        <BuilderColorPicker styleAction="'--sl-marker'" noTransparency="true" enabledTabs="['solid', 'custom']"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Featured Marker">
+        <BuilderColorPicker styleAction="'--sl-marker-featured'" noTransparency="true" enabledTabs="['solid', 'custom']"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Selected Marker">
+        <BuilderColorPicker styleAction="'--sl-marker-selected'" noTransparency="true" enabledTabs="['solid', 'custom']"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Popup Shows">
+        <div class="d-flex flex-wrap gap-1">
+            <BuilderButton dataAttributeAction="'popupImage'" dataAttributeActionValue="'true'" title.translate="Photo"><i class="fa fa-picture-o"/></BuilderButton>
+            <BuilderButton dataAttributeAction="'popupCategory'" dataAttributeActionValue="'true'" title.translate="Category"><i class="fa fa-tag"/></BuilderButton>
+            <BuilderButton dataAttributeAction="'popupName'" dataAttributeActionValue="'true'" title.translate="Name"><i class="fa fa-header"/></BuilderButton>
+            <BuilderButton dataAttributeAction="'popupAddress'" dataAttributeActionValue="'true'" title.translate="Address"><i class="fa fa-map-marker"/></BuilderButton>
+            <BuilderButton dataAttributeAction="'popupPhone'" dataAttributeActionValue="'true'" title.translate="Phone"><i class="fa fa-phone"/></BuilderButton>
+        </div>
+    </BuilderRow>
+    <BuilderRow label="''" level="1">
+        <div class="d-flex flex-wrap gap-1">
+            <BuilderButton dataAttributeAction="'popupHours'" dataAttributeActionValue="'true'" title.translate="Today's hours"><i class="fa fa-clock-o"/></BuilderButton>
+            <BuilderButton dataAttributeAction="'popupDistance'" dataAttributeActionValue="'true'" title.translate="Distance"><i class="fa fa-road"/></BuilderButton>
+            <BuilderButton id="'sl_pop_detail'" dataAttributeAction="'popupDetail'" dataAttributeActionValue="'true'" title.translate="Details button"><i class="fa fa-arrow-right"/></BuilderButton>
+            <BuilderButton id="'sl_pop_dir'" dataAttributeAction="'popupDirections'" dataAttributeActionValue="'true'" title.translate="Directions link"><i class="fa fa-location-arrow"/></BuilderButton>
+        </div>
+    </BuilderRow>
+    <BuilderRow label.translate="Details Text" level="1" t-if="isActiveItem('sl_pop_detail')">
+        <BuilderTextInput dataAttributeAction="'detailLabel'" placeholder.translate="View details"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Directions Text" level="1" t-if="isActiveItem('sl_pop_dir')">
+        <BuilderTextInput dataAttributeAction="'directionsLabel'" placeholder.translate="Directions"/>
+    </BuilderRow>
+</t>
+
+<!-- ================================================================ -->
+<!-- Store Cards (listing: homepage, landing pages...)                -->
+<!-- ================================================================ -->
+<t t-name="store_locator.ListingRows">
+    <BuilderRow label.translate="How Many">
+        <BuilderNumberInput dataAttributeAction="'limit'" min="1" max="24" default="3"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Exclude" tooltip.translate="These stores are never shown in this block.">
+        <BuilderMany2Many model="'store.location'" dataAttributeAction="'excludeIds'" limit="10"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Display">
+        <BuilderSelect dataAttributeAction="'display'">
+            <BuilderSelectItem dataAttributeActionValue="'grid'">Grid</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'slider'">Slider</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Columns">
+        <BuilderButtonGroup applyTo="'.sl-cards-rt'">
+            <BuilderButton classAction="'sl-cols-2'">2</BuilderButton>
+            <BuilderButton classAction="'sl-cols-3'">3</BuilderButton>
+            <BuilderButton classAction="'sl-cols-4'">4</BuilderButton>
+        </BuilderButtonGroup>
+    </BuilderRow>
+    <BuilderRow label.translate="Card Click">
+        <BuilderSelect dataAttributeAction="'cardClick'" applyTo="'.sl-card-tpl'">
+            <BuilderSelectItem dataAttributeActionValue="'detail'">Open Store Page</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'none'">Nothing</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <t t-call="store_locator.CardDesignRows"/>
+    <t t-call="store_locator.ColorRows"/>
+</t>
+
+<t t-name="store_locator.StoreCardsOption">
+    <BuilderRow label.translate="Show">
+        <BuilderSelect dataAttributeAction="'mode'">
+            <BuilderSelectItem id="'sc_featured'" dataAttributeActionValue="'featured'">Featured Stores</BuilderSelectItem>
+            <BuilderSelectItem id="'sc_latest'" dataAttributeActionValue="'latest'">Latest Stores</BuilderSelectItem>
+            <BuilderSelectItem id="'sc_all'" dataAttributeActionValue="'all'">All Stores</BuilderSelectItem>
+            <BuilderSelectItem id="'sc_filter'" dataAttributeActionValue="'filter'">By Category / Tag</BuilderSelectItem>
+            <BuilderSelectItem id="'sc_manual'" dataAttributeActionValue="'manual'">Hand-picked Stores</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Stores" level="1" t-if="isActiveItem('sc_manual')" tooltip.translate="Shown in this order.">
+        <BuilderMany2Many model="'store.location'" dataAttributeAction="'storeIds'" limit="10"/>
+    </BuilderRow>
+    <t t-if="isActiveItem('sc_filter')">
+        <BuilderRow label.translate="Categories" level="1">
+            <BuilderMany2Many model="'store.category'" dataAttributeAction="'categoryIds'" limit="10"/>
+        </BuilderRow>
+        <BuilderRow label.translate="Tags" level="1">
+            <BuilderMany2Many model="'store.tag'" dataAttributeAction="'tagIds'" limit="10"/>
+        </BuilderRow>
+        <BuilderRow label.translate="Featured Only" level="1">
+            <BuilderCheckbox dataAttributeAction="'featuredOnly'" dataAttributeActionValue="'true'"/>
+        </BuilderRow>
+    </t>
+    <BuilderRow label.translate="Order" t-if="isActiveItem('sc_featured') or isActiveItem('sc_all') or isActiveItem('sc_filter')">
+        <BuilderSelect dataAttributeAction="'order'">
+            <BuilderSelectItem dataAttributeActionValue="''">Featured first</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'name'">Name</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'latest'">Newest first</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'sequence'">Manual sequence</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <t t-call="store_locator.ListingRows"/>
+</t>
+
+<t t-name="store_locator.RelatedOption">
+    <BuilderRow label.translate="Related By">
+        <BuilderSelect dataAttributeAction="'relation'">
+            <BuilderSelectItem dataAttributeActionValue="'nearby'">Nearest Stores</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'category'">Same Category</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'tags'">Same Tags</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'city'">Same City</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'state'">Same State</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'country'">Same Country</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'any'">Any Other Store</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Order">
+        <BuilderSelect dataAttributeAction="'order'">
+            <BuilderSelectItem dataAttributeActionValue="''">Featured first / nearest</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'name'">Name</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'latest'">Newest first</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Hide When Empty" tooltip.translate="The current store is always excluded. Hide the block for visitors when no other store matches.">
+        <BuilderCheckbox classAction="'sl-keep-empty'" inverseAction="true"/>
+    </BuilderRow>
+    <t t-call="store_locator.ListingRows"/>
+</t>
+
+<!-- ================================================================ -->
+<!-- Store page blocks                                                -->
+<!-- ================================================================ -->
+<t t-name="store_locator.TextStyleRows">
+    <BuilderRow label.translate="Text Color">
+        <BuilderColorPicker styleAction="'color'" applyTo="'[data-sl-value]'" enabledTabs="['solid', 'custom', 'gradient']"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Alignment">
+        <BuilderButtonGroup>
+            <BuilderButton classAction="''" title.translate="Default"><i class="fa fa-ban"/></BuilderButton>
+            <BuilderButton classAction="'text-start'" title.translate="Left"><i class="fa fa-align-left"/></BuilderButton>
+            <BuilderButton classAction="'text-center'" title.translate="Center"><i class="fa fa-align-center"/></BuilderButton>
+            <BuilderButton classAction="'text-end'" title.translate="Right"><i class="fa fa-align-right"/></BuilderButton>
+        </BuilderButtonGroup>
+    </BuilderRow>
+</t>
+
+<t t-name="store_locator.TitleOption">
+    <BuilderRow label.translate="Size">
+        <BuilderSelect applyTo="'.sl-title'">
+            <BuilderSelectItem classAction="'display-3'">Display 3</BuilderSelectItem>
+            <BuilderSelectItem classAction="'display-4'">Display 4</BuilderSelectItem>
+            <BuilderSelectItem classAction="'display-5'">Display 5</BuilderSelectItem>
+            <BuilderSelectItem classAction="''">Heading 1</BuilderSelectItem>
+            <BuilderSelectItem classAction="'h2-fs'">Heading 2</BuilderSelectItem>
+            <BuilderSelectItem classAction="'h3-fs'">Heading 3</BuilderSelectItem>
+            <BuilderSelectItem classAction="'h4-fs'">Heading 4</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Weight">
+        <BuilderSelect applyTo="'.sl-title'">
+            <BuilderSelectItem classAction="''">Default</BuilderSelectItem>
+            <BuilderSelectItem classAction="'fw-light'">Light</BuilderSelectItem>
+            <BuilderSelectItem classAction="'fw-normal'">Normal</BuilderSelectItem>
+            <BuilderSelectItem classAction="'fw-bold'">Bold</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <t t-call="store_locator.TextStyleRows"/>
+</t>
+
+<t t-name="store_locator.TextOption">
+    <BuilderRow label.translate="Shows">
+        <BuilderSelect action="'slTextField'">
+            <BuilderSelectItem actionValue="'short_description'">Short Description</BuilderSelectItem>
+            <BuilderSelectItem actionValue="'address_line'">Address (one line)</BuilderSelectItem>
+            <BuilderSelectItem actionValue="'city'">City</BuilderSelectItem>
+            <BuilderSelectItem actionValue="'category'">Category</BuilderSelectItem>
+            <BuilderSelectItem actionValue="'phone'">Phone</BuilderSelectItem>
+            <BuilderSelectItem actionValue="'mobile'">Mobile</BuilderSelectItem>
+            <BuilderSelectItem actionValue="'email'">Email</BuilderSelectItem>
+            <BuilderSelectItem actionValue="'website'">Website</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Size">
+        <BuilderSelect applyTo="'[data-sl-value]'">
+            <BuilderSelectItem classAction="'small'">Small</BuilderSelectItem>
+            <BuilderSelectItem classAction="''">Normal</BuilderSelectItem>
+            <BuilderSelectItem classAction="'lead'">Lead</BuilderSelectItem>
+            <BuilderSelectItem classAction="'h4-fs'">Large</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <t t-call="store_locator.TextStyleRows"/>
+</t>
+
+<t t-name="store_locator.ImageOption">
+    <BuilderRow label.translate="Shape">
+        <BuilderSelect>
+            <BuilderSelectItem classAction="'sl-img-avatar'">Square Avatar</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-img-circle'">Circle</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-img-wide'">Wide (16:9)</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-img-natural'">Original</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Size">
+        <BuilderNumberInput styleAction="'--sl-img-size'" unit="'px'" min="40" max="600" default="null"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Corners">
+        <BuilderNumberInput styleAction="'--sl-img-radius'" unit="'px'" min="0" max="300" default="null"/>
+    </BuilderRow>
+    <BuilderRow label.translate="White Border">
+        <BuilderCheckbox classAction="'sl-img-ring'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Shadow">
+        <BuilderCheckbox classAction="'sl-img-shadow'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Hide Without Photo">
+        <BuilderCheckbox dataAttributeAction="'slIf'" dataAttributeActionValue="'image'"/>
+    </BuilderRow>
+</t>
+
+<t t-name="store_locator.BadgesOption">
+    <BuilderRow label.translate="Category">
+        <BuilderCheckbox classAction="'sl-hide-cat'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Featured">
+        <BuilderCheckbox classAction="'sl-hide-feat'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Open 24/7">
+        <BuilderCheckbox classAction="'sl-hide-open'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Tags">
+        <BuilderCheckbox classAction="'sl-hide-tag'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Style">
+        <BuilderSelect>
+            <BuilderSelectItem classAction="''">Soft</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-badges-solid'">Solid</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-badges-outline'">Outline</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-badges-glass'">On Dark Background</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+</t>
+
+<t t-name="store_locator.GalleryOption">
+    <BuilderRow label.translate="Layout">
+        <BuilderSelect dataAttributeAction="'layout'">
+            <BuilderSelectItem dataAttributeActionValue="'slider'">Slider, Thumbnails Below</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'slider-top'">Slider, Thumbnails Above</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'slider-side'">Slider, Thumbnails Beside</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'carousel'">Slider, No Thumbnails</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'grid'">Photo Grid</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Height">
+        <BuilderNumberInput styleAction="'--sl-gal-h'" unit="'px'" min="160" max="1000" step="20" default="null"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Thumbnail Size">
+        <BuilderNumberInput styleAction="'--sl-gal-thumb'" unit="'px'" min="40" max="200" default="null"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Corners">
+        <BuilderNumberInput styleAction="'--sl-gal-radius'" unit="'px'" min="0" max="40" default="null"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Photo Fit">
+        <BuilderSelect>
+            <BuilderSelectItem classAction="''">Fill (crop)</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-gal-contain'">Whole Photo</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Popup on Click">
+        <BuilderCheckbox dataAttributeAction="'noLightbox'" dataAttributeActionValue="'true'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Autoplay (sec)" tooltip.translate="0 = no autoplay">
+        <BuilderNumberInput dataAttributeAction="'autoplay'" min="0" max="30" default="0"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Include Main Photo">
+        <BuilderCheckbox dataAttributeAction="'hideMain'" dataAttributeActionValue="'true'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Arrows">
+        <BuilderCheckbox classAction="'sl-gal-noarrows'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Counter">
+        <BuilderCheckbox classAction="'sl-gal-nocounter'" inverseAction="true"/>
+    </BuilderRow>
+</t>
+
+<t t-name="store_locator.HoursOption">
+    <BuilderRow label.translate="Highlight Today">
+        <BuilderCheckbox dataAttributeAction="'noHighlight'" dataAttributeActionValue="'true'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Style">
+        <BuilderSelect>
+            <BuilderSelectItem classAction="''">Dashed Lines</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-hours-striped'">Striped</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-hours-compact'">Compact</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+</t>
+
+<t t-name="store_locator.ContactOption">
+    <BuilderRow label.translate="Phone">
+        <BuilderCheckbox classAction="'sl-hide-phone'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Mobile">
+        <BuilderCheckbox classAction="'sl-hide-mobile'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Email">
+        <BuilderCheckbox classAction="'sl-hide-email'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Website">
+        <BuilderCheckbox classAction="'sl-hide-website'" inverseAction="true"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Icons">
+        <BuilderSelect>
+            <BuilderSelectItem classAction="''">Soft Squares</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-icons-plain'">Plain</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-icons-none'">None</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="In a Row">
+        <BuilderCheckbox classAction="'sl-contact-inline'"/>
+    </BuilderRow>
+</t>
+
+<t t-name="store_locator.AddressOption">
+    <BuilderRow label.translate="Icon">
+        <BuilderCheckbox classAction="'sl-address-icon'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="One Line">
+        <BuilderCheckbox classAction="'sl-address-inline'"/>
+    </BuilderRow>
+</t>
+
+<t t-name="store_locator.ButtonsOption">
+    <BuilderRow label.translate="Alignment">
+        <BuilderButtonGroup>
+            <BuilderButton classAction="''" title.translate="Left"><i class="fa fa-align-left"/></BuilderButton>
+            <BuilderButton classAction="'justify-content-center'" title.translate="Center"><i class="fa fa-align-center"/></BuilderButton>
+            <BuilderButton classAction="'justify-content-end'" title.translate="Right"><i class="fa fa-align-right"/></BuilderButton>
+        </BuilderButtonGroup>
+    </BuilderRow>
+    <BuilderRow label.translate="Full Width on Mobile">
+        <BuilderCheckbox classAction="'sl-btns-block-mobile'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Stacked">
+        <BuilderCheckbox classAction="'sl-btns-stacked'"/>
+    </BuilderRow>
+</t>
+
+<t t-name="store_locator.ButtonLinkOption">
+    <BuilderRow label.translate="Store Link" tooltip.translate="Rename the button by clicking its text. Buttons for missing values (no phone...) are hidden.">
+        <BuilderSelect action="'slButtonLink'">
+            <BuilderSelectItem actionValue="'directions'">Directions</BuilderSelectItem>
+            <BuilderSelectItem actionValue="'maps'">Open in Google Maps</BuilderSelectItem>
+            <BuilderSelectItem actionValue="'phone'">Call (phone)</BuilderSelectItem>
+            <BuilderSelectItem actionValue="'mobile'">Call (mobile)</BuilderSelectItem>
+            <BuilderSelectItem actionValue="'email'">Email</BuilderSelectItem>
+            <BuilderSelectItem actionValue="'website'">Store Website</BuilderSelectItem>
+            <BuilderSelectItem actionValue="'locator'">Store Locator Page</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+</t>
+
+<t t-name="store_locator.LocationMapOption">
+    <BuilderRow label.translate="Height">
+        <BuilderNumberInput styleAction="'--sl-lmap-h'" unit="'px'" min="160" max="1000" step="20" default="null"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Zoom">
+        <BuilderNumberInput dataAttributeAction="'zoom'" min="3" max="19" default="15"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Map Theme">
+        <BuilderSelect dataAttributeAction="'tiles'">
+            <BuilderSelectItem dataAttributeActionValue="'osm'">OpenStreetMap</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'voyager'">Voyager</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'light'">Light</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'dark'">Dark</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Marker Style">
+        <BuilderSelect dataAttributeAction="'markerStyle'">
+            <BuilderSelectItem dataAttributeActionValue="'pin'">Pin</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'circle'">Circle</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'dot'">Dot</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+    <BuilderRow label.translate="Marker Size">
+        <BuilderButtonGroup dataAttributeAction="'markerSize'">
+            <BuilderButton dataAttributeActionValue="'small'">S</BuilderButton>
+            <BuilderButton dataAttributeActionValue="'medium'">M</BuilderButton>
+            <BuilderButton dataAttributeActionValue="'large'">L</BuilderButton>
+        </BuilderButtonGroup>
+    </BuilderRow>
+    <BuilderRow label.translate="Marker Color">
+        <BuilderColorPicker styleAction="'--sl-marker'" noTransparency="true" enabledTabs="['solid', 'custom']"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Zoom with Wheel">
+        <BuilderCheckbox dataAttributeAction="'scrollZoom'" dataAttributeActionValue="'true'"/>
+    </BuilderRow>
+    <BuilderRow label.translate="Popup">
+        <BuilderCheckbox dataAttributeAction="'noPopup'" dataAttributeActionValue="'true'" inverseAction="true"/>
+    </BuilderRow>
+</t>
+
+<t t-name="store_locator.BreadcrumbOption">
+    <BuilderRow label.translate="Colors">
+        <BuilderSelect>
+            <BuilderSelectItem classAction="''">For Light Background</BuilderSelectItem>
+            <BuilderSelectItem classAction="'sl-on-dark'">For Dark Background</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+</t>
+
+<!-- Sections / cards / columns of a store page -->
+<t t-name="store_locator.ConditionOption">
+    <BuilderRow label.translate="Show Only If Store Has" tooltip.translate="Hidden for visitors on store pages without this information (editors still see it, dimmed).">
+        <BuilderSelect dataAttributeAction="'slIf'">
+            <BuilderSelectItem dataAttributeActionValue="''">Always Show</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'gallery'">Photos</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'image'">Main Photo</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'description'">Description</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'short_description'">Short Description</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'hours'">Opening Hours</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'contact'">Contact Details</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'phone'">Phone</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'email'">Email</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'website'">Website</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'map'">Map Position</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'tags'">Tags</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'featured'">Featured Flag</BuilderSelectItem>
+            <BuilderSelectItem dataAttributeActionValue="'open24'">Open 24/7 Flag</BuilderSelectItem>
+        </BuilderSelect>
+    </BuilderRow>
+</t>
+
+<t t-name="store_locator.SectionOverlapOption">
+    <BuilderRow label.translate="Overlap Block Above" tooltip.translate="Pull this block up over the previous one (e.g. over the hero banner).">
+        <BuilderCheckbox classAction="'sl-overlap-prev'"/>
+    </BuilderRow>
+</t>
+
+</templates>

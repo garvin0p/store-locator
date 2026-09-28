@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Default categories: usable out of the box, editable by administrators -->
+    <record id="store_category_retail" model="store.category">
+        <field name="name">Retail Store</field>
+        <field name="sequence">10</field>
+        <field name="icon">fa fa-shopping-bag</field>
+        <field name="color">1</field>
+        <field name="description">Regular retail stores where the full product range is available.</field>
+    </record>
+    <record id="store_category_showroom" model="store.category">
+        <field name="name">Showroom</field>
+        <field name="sequence">20</field>
+        <field name="icon">fa fa-star</field>
+        <field name="color">3</field>
+        <field name="description">Flagship showrooms for demonstrations and product discovery.</field>
+    </record>
+    <record id="store_category_service" model="store.category">
+        <field name="name">Service Center</field>
+        <field name="sequence">30</field>
+        <field name="icon">fa fa-wrench</field>
+        <field name="color">4</field>
+        <field name="description">Certified service centers for repairs, maintenance and support.</field>
+    </record>
+    <record id="store_category_pickup" model="store.category">
+        <field name="name">Pickup Point</field>
+        <field name="sequence">40</field>
+        <field name="icon">fa fa-map-signs</field>
+        <field name="color">6</field>
+        <field name="description">Convenient pickup points for online orders.</field>
+    </record>
+
+    <!-- Default tags -->
+    <record id="store_tag_wheelchair" model="store.tag">
+        <field name="name">Wheelchair Accessible</field>
+        <field name="sequence">10</field>
+        <field name="color">1</field>
+    </record>
+    <record id="store_tag_parking" model="store.tag">
+        <field name="name">Parking Available</field>
+        <field name="sequence">20</field>
+        <field name="color">2</field>
+    </record>
+    <record id="store_tag_open_sunday" model="store.tag">
+        <field name="name">Open Sunday</field>
+        <field name="sequence">30</field>
+        <field name="color">3</field>
+    </record>
+    <record id="store_tag_pet_friendly" model="store.tag">
+        <field name="name">Pet Friendly</field>
+        <field name="sequence">40</field>
+        <field name="color">4</field>
+    </record>
+    <record id="store_tag_24h" model="store.tag">
+        <field name="name">24 Hours</field>
+        <field name="sequence">50</field>
+        <field name="color">5</field>
+    </record>
+    <record id="store_tag_delivery" model="store.tag">
+        <field name="name">Delivery Available</field>
+        <field name="sequence">60</field>
+        <field name="color">6</field>
+    </record>
+    <record id="store_tag_pickup" model="store.tag">
+        <field name="name">Pickup Available</field>
+        <field name="sequence">70</field>
+        <field name="color">7</field>
+    </record>
+    <record id="store_tag_wifi" model="store.tag">
+        <field name="name">Wi-Fi Available</field>
+        <field name="sequence">80</field>
+        <field name="color">8</field>
+    </record>
+    <record id="store_tag_ev" model="store.tag">
+        <field name="name">EV Charging</field>
+        <field name="sequence">90</field>
+        <field name="color">9</field>
+    </record>
+    <record id="store_tag_bilingual" model="store.tag">
+        <field name="name">Bilingual Staff</field>
+        <field name="sequence">100</field>
+        <field name="color">10</field>
+    </record>
+
+    <!-- Website menu pointing to the public locator page -->
+    <record id="website_menu_store_locator" model="website.menu">
+        <field name="name">Store Locator</field>
+        <field name="url">/store-locator</field>
+        <field name="page_id" ref="store_locator_website_page"/>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence">60</field>
+    </record>
+</odoo>

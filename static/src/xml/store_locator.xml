@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+
+    <!-- ===================== Root layout ===================== -->
+    <!-- Layout is driven by the block options (Website editor):   -->
+    <!--   list-map (default) | map-list | map-top | list | map   -->
+    <t t-name="store_locator.StoreLocator">
+        <div t-att-class="appClass" t-ref="root">
+            <div class="sl-toolbar" t-if="showToolbar">
+                <div class="sl-search" t-if="options.showSearch">
+                    <span class="sl-search-icon fa fa-search" aria-hidden="true"/>
+                    <input type="search" class="sl-search-input"
+                           t-att-placeholder="searchPlaceholder"
+                           aria-label="Search stores"
+                           t-att-value="state.search"
+                           t-on-input="onSearchInput"/>
+                </div>
+                <div class="sl-toolbar-actions">
+                    <t t-if="options.showGeolocation and config.geolocation">
+                        <button type="button" class="sl-btn sl-btn-soft"
+                                t-att-disabled="state.locating ? 'disabled' : undefined"
+                                t-on-click="getUserLocation">
+                            <span class="fa fa-crosshairs" aria-hidden="true"/>
+                            <t t-if="state.locating"> Locating...</t>
+                            <t t-else=""> Use my location</t>
+                        </button>
+                    </t>
+                    <t t-if="config.distance and state.userLocation">
+                        <label class="sl-sort">
+                            <span class="sl-sort-label">Sort by</span>
+                            <select class="sl-select sl-select-auto" aria-label="Sort results"
+                                    t-on-change="onSortChange">
+                                <option value="default" t-att-selected="state.sortBy === 'default' ? 'selected' : undefined">Default</option>
+                                <option value="distance" t-att-selected="state.sortBy === 'distance' ? 'selected' : undefined">Distance</option>
+                            </select>
+                        </label>
+                    </t>
+                </div>
+            </div>
+
+            <p class="sl-alert" role="alert" t-if="state.locationError">
+                <span class="fa fa-exclamation-circle" aria-hidden="true"/>
+                <t t-out="state.locationError"/>
+            </p>
+            <p class="sl-alert" role="alert" t-if="state.error">
+                <span class="fa fa-exclamation-circle" aria-hidden="true"/>
+                <t t-out="state.error"/>
+            </p>
+
+            <div class="sl-layout">
+                <!-- Filters + scrollable store listing -->
+                <aside class="sl-side" aria-label="Stores and filters" t-if="showList or showFilterPanel">
+                    <div class="sl-side-card">
+                        <details class="sl-filters" t-att-open="options.filtersOpen ? 'open' : undefined" t-if="showFilterPanel">
+                            <summary class="sl-filters-summary">
+                                <span class="fa fa-sliders" aria-hidden="true"/>
+                                <span>Filters</span>
+                                <span class="sl-filters-chev fa fa-chevron-down" aria-hidden="true"/>
+                            </summary>
+                            <div class="sl-filters-body">
+                                <FilterPanel state="state"
+                                             config="config"
+                                             options="options"
+                                             categories="props.categories || []"
+                                             countries="props.countries || []"
+                                             states="states"
+                                             onSearch.bind="searchStores"
+                                             onFilter.bind="filterStores"
+                                             onClear.bind="clearFilters"
+                                             onLocate.bind="getUserLocation"/>
+                            </div>
+                        </details>
+
+                        <StoreList t-if="showList"
+                                   state="state"
+                                   options="options"
+                                   stores="filteredStores"
+                                   total="state.total"
+                                   label="resultLabel"
+                                   onSelect.bind="selectStore"
+                                   onDirections.bind="openDirections"
+                                   onLoadMore.bind="loadMore"/>
+                    </div>
+                </aside>
+
+                <!-- Interactive map -->
+                <section class="sl-map-panel" aria-label="Map" t-if="showMap">
+                    <StoreMap config="config"
+                              stores="filteredStores"
+                              selectedStoreId="state.selectedStoreId"
+                              onSelect.bind="selectStore"/>
+                </section>
+            </div>
+        </div>
+    </t>
+
+    <!-- ===================== Filter panel ===================== -->
+    <t t-name="store_locator.FilterPanel">
+        <div class="sl-filter-panel">
+            <div class="sl-filter-group" t-if="props.options.showCategories and props.categories.length > 1">
+                <span class="sl-label">Categories</span>
+                <div class="sl-chip-row" role="group" aria-label="Filter by category">
+                    <button type="button"
+                            t-foreach="props.categories" t-as="category" t-key="category.id"
+                            class="sl-chip"
+                            t-att-class="props.state.category === category.id ? 'sl-chip-active' : ''"
+                            t-on-click="() => this.onCategoryClick(category)">
+                        <span t-if="category.icon" t-att-class="category.icon" aria-hidden="true"/>
+                        <t t-out="category.name"/>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sl-filter-grid">
+                <t t-if="props.options.showRegion">
+                    <div class="sl-filter-group">
+                        <label class="sl-label" t-att-for="'sl-filter-country-' + uid">Country</label>
+                        <select t-att-id="'sl-filter-country-' + uid" class="sl-select"
+                                t-on-change="onCountryChange">
+                            <option value="">All countries</option>
+                            <t t-foreach="props.countries" t-as="country" t-key="country.id">
+                                <option t-att-value="country.id"
+                                        t-att-selected="props.state.country === country.id ? 'selected' : undefined"
+                                        t-out="country.name"/>
+                            </t>
+                        </select>
+                    </div>
+
+                    <div class="sl-filter-group">
+                        <label class="sl-label" t-att-for="'sl-filter-state-' + uid">State / Province</label>
+                        <select t-att-id="'sl-filter-state-' + uid" class="sl-select"
+                                t-att-disabled="!props.state.country ? 'disabled' : undefined"
+                                t-on-change="onStateChange">
+                            <option value="">All states</option>
+                            <t t-foreach="props.states" t-as="stateOption" t-key="stateOption.id">
+                                <option t-att-value="stateOption.id"
+                                        t-att-selected="props.state.state === stateOption.id ? 'selected' : undefined"
+                                        t-out="stateOption.name"/>
+                            </t>
+                        </select>
+                    </div>
+                </t>
+
+                <div class="sl-filter-group" t-if="props.options.showZip">
+                    <label class="sl-label" t-att-for="'sl-filter-zip-' + uid">ZIP code</label>
+                    <input t-att-id="'sl-filter-zip-' + uid" type="text" class="sl-input"
+                           placeholder="e.g. 78701" t-att-value="props.state.zip"
+                           t-on-input="onZipInput"/>
+                </div>
+
+                <div class="sl-filter-group" t-if="props.options.showRadius and props.config.distance">
+                    <label class="sl-label" t-att-for="'sl-filter-radius-' + uid">Distance from me</label>
+                    <select t-att-id="'sl-filter-radius-' + uid" class="sl-select"
+                            t-on-change="onRadiusChange">
+                        <option value="0" t-att-selected="!props.state.radius ? 'selected' : undefined">Any distance</option>
+                        <t t-foreach="radiusChoices" t-as="km" t-key="km">
+                            <option t-att-value="km" t-att-selected="props.state.radius === km ? 'selected' : undefined"
+                                    t-out="'Within ' + km + ' km'"/>
+                        </t>
+                    </select>
+                </div>
+            </div>
+
+            <div class="sl-filter-footer">
+                <label class="sl-checkbox" t-if="props.options.showFeaturedToggle and !props.options.featuredOnly">
+                    <input type="checkbox"
+                           t-att-checked="props.state.featured ? 'checked' : undefined"
+                           t-on-change="onFeaturedChange"/>
+                    <span class="fa fa-star" aria-hidden="true"/> Featured stores only
+                </label>
+                <span t-else=""/>
+                <button type="button" class="sl-btn sl-btn-ghost sl-btn-sm" t-on-click="onClear">
+                    <span class="fa fa-times" aria-hidden="true"/> Clear
+                </button>
+            </div>
+        </div>
+    </t>
+
+    <!-- ===================== Result list (scrollable) ===================== -->
+    <t t-name="store_locator.StoreList">
+        <div class="sl-list">
+            <div class="sl-list-head" aria-live="polite">
+                <span class="sl-list-count">
+                    <span class="fa fa-map-marker" aria-hidden="true"/>
+                    <t t-out="props.label"/>
+                </span>
+                <span class="sl-spinner" t-if="props.state.loading" role="status" aria-label="Loading"/>
+            </div>
+
+            <div class="sl-list-scroll" tabindex="0">
+                <div class="sl-empty" t-if="!props.state.loading and !props.stores.length and !props.state.error">
+                    <span class="sl-empty-icon fa fa-map-o" aria-hidden="true"/>
+                    <h3 class="sl-empty-title">No stores found</h3>
+                    <p class="sl-empty-text">
+                        Try a different search, widen your filters, or clear them to see every store.
+                    </p>
+                </div>
+
+                <div class="sl-cards">
+                    <t t-foreach="props.stores" t-as="store" t-key="store.id">
+                        <StoreCard store="store"
+                                   options="props.options"
+                                   selected="props.state.selectedStoreId === store.id"
+                                   showDistance="!!props.state.userLocation"
+                                   onSelect="props.onSelect"
+                                   onDirections="props.onDirections"/>
+                    </t>
+                </div>
+            </div>
+
+            <div class="sl-list-foot" t-if="props.state.hasMore and !props.state.loading">
+                <button type="button" class="sl-btn sl-btn-soft sl-btn-block" t-on-click="onLoadMore">
+                    <span class="fa fa-chevron-down" aria-hidden="true"/> Load more stores
+                </button>
+            </div>
+            <div class="sl-list-foot" t-if="props.state.loading and props.state.hasMore">
+                <span class="sl-spinner" role="status" aria-label="Loading"/>
+            </div>
+        </div>
+    </t>
+
+    <!-- ===================== Store card ===================== -->
+    <t t-name="store_locator.StoreCard">
+        <article class="sl-card" t-att-class="props.selected ? 'sl-card-selected' : ''"
+                 t-att-data-store-id="props.store.id" tabindex="0" role="button"
+                 t-att-aria-pressed="props.selected ? 'true' : 'false'"
+                 t-on-click="onClick" t-on-keydown="onKeydown">
+            <div class="sl-card-media" t-if="props.options.showImages">
+                <img t-if="props.store.imageUrl" t-att-src="props.store.imageUrl"
+                     t-att-alt="props.store.name" loading="lazy"/>
+                <div t-else="" class="sl-card-media-ph" aria-hidden="true">
+                    <span t-att-class="props.store.categoryIcon or 'fa fa-building-o'"/>
+                </div>
+                <span class="sl-card-flag" t-if="props.store.featured" title="Featured store">
+                    <span class="fa fa-star" aria-hidden="true"/>
+                </span>
+            </div>
+            <div class="sl-card-body">
+                <div class="sl-card-top">
+                    <span class="sl-card-flag-inline fa fa-star" t-if="!props.options.showImages and props.store.featured" title="Featured store"/>
+                    <h3 class="sl-card-name" t-out="props.store.name"/>
+                    <span class="sl-chip-open" t-if="props.store.is24Hours">Open 24/7</span>
+                </div>
+                <p class="sl-card-cat">
+                    <span t-if="props.store.categoryIcon" t-att-class="props.store.categoryIcon" aria-hidden="true"/>
+                    <t t-out="props.store.category"/>
+                </p>
+                <p class="sl-card-addr" t-if="props.store.address">
+                    <span class="fa fa-map-marker" aria-hidden="true"/>
+                    <t t-out="props.store.address"/>
+                </p>
+                <p class="sl-card-dist" t-if="props.showDistance and props.store.distanceLabel">
+                    <span class="fa fa-road" aria-hidden="true"/>
+                    <t t-out="props.store.distanceLabel"/> away
+                </p>
+                <div class="sl-card-tags" t-if="props.options.showTags and props.store.tags.length">
+                    <t t-foreach="props.store.tags" t-as="tag" t-key="tag.id">
+                        <span class="sl-badge-tag" t-out="tag.name"/>
+                    </t>
+                </div>
+                <div class="sl-card-actions">
+                    <a t-if="props.options.showDetails" class="sl-btn sl-btn-primary sl-btn-sm" t-att-href="props.store.detailUrl">
+                        View Details <span class="fa fa-arrow-right" aria-hidden="true"/>
+                    </a>
+                    <button type="button" class="sl-btn-icon" title="Directions"
+                            aria-label="Get directions"
+                            t-on-click="onDirections">
+                        <span class="fa fa-location-arrow" aria-hidden="true"/>
+                    </button>
+                    <a t-if="props.store.phone" class="sl-btn-icon" title="Call the store"
+                       aria-label="Call the store"
+                       t-att-href="'tel:' + props.store.phone">
+                        <span class="fa fa-phone" aria-hidden="true"/>
+                    </a>
+                    <a t-if="props.store.website" class="sl-btn-icon" title="Website"
+                       aria-label="Open website"
+                       t-att-href="props.store.website" target="_blank" rel="noopener noreferrer">
+                        <span class="fa fa-globe" aria-hidden="true"/>
+                    </a>
+                </div>
+            </div>
+        </article>
+    </t>
+
+    <!-- ===================== Map ===================== -->
+    <t t-name="store_locator.StoreMap">
+        <div class="sl-map">
+            <div t-ref="map" class="sl-map-canvas" role="application" aria-label="Stores map"/>
+        </div>
+    </t>
+
+    <!-- ===================== Store cards block (s_store_cards) ===================== -->
+    <t t-name="store_locator.StoreCardsGrid">
+        <div class="row g-4">
+            <t t-foreach="stores" t-as="store" t-key="store.id">
+                <div t-att-class="colClass">
+                    <a class="sl-scard" t-att-href="store.detailUrl">
+                        <span class="sl-scard-media">
+                            <img t-if="store.imageUrl" t-att-src="store.imageUrl" t-att-alt="store.name" loading="lazy"/>
+                            <span t-else="" class="sl-scard-media-ph" aria-hidden="true">
+                                <span t-att-class="store.categoryIcon or 'fa fa-building-o'"/>
+                            </span>
+                            <span class="sl-card-flag" t-if="store.featured" title="Featured store">
+                                <span class="fa fa-star" aria-hidden="true"/>
+                            </span>
+                        </span>
+                        <span class="sl-scard-body">
+                            <span class="sl-card-cat">
+                                <span t-if="store.categoryIcon" t-att-class="store.categoryIcon" aria-hidden="true"/>
+                                <t t-out="store.category"/>
+                            </span>
+                            <span class="sl-scard-name" t-out="store.name"/>
+                            <span class="sl-scard-desc" t-if="store.shortDescription" t-out="store.shortDescription"/>
+                            <span class="sl-card-addr" t-if="store.address">
+                                <span class="fa fa-map-marker" aria-hidden="true"/>
+                                <t t-out="store.address"/>
+                            </span>
+                            <span class="sl-scard-link">View details <span class="fa fa-arrow-right" aria-hidden="true"/></span>
+                        </span>
+                    </a>
+                </div>
+            </t>
+            <div class="col-12" t-if="!stores.length">
+                <div class="sl-empty">
+                    <span class="sl-empty-icon fa fa-map-o" aria-hidden="true"/>
+                    <h3 class="sl-empty-title">No stores to show yet</h3>
+                    <p class="sl-empty-text">Publish stores (and mark some as featured) in the Store Locator app.</p>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

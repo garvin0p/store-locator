@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================ -->
+    <!-- Value fragments injected into the "Store Page" blocks            -->
+    <!-- (controllers/store_fields.py). Styles are driven by the block    -->
+    <!-- options, so every part carries a stable class.                   -->
+    <!-- ================================================================ -->
+
+    <template id="sl_value_category" name="Store value: category">
+        <span class="sl-v-cat"><span t-if="store.category_id.icon" t-att-class="store.category_id.icon" aria-hidden="true"/> <t t-out="store.category_id.name"/></span>
+    </template>
+
+    <template id="sl_value_address" name="Store value: address">
+        <span class="sl-v-address">
+            <t t-if="store.street"><span class="sl-v-line" t-out="store.street"/></t>
+            <t t-if="store.street2"><span class="sl-v-line" t-out="store.street2"/></t>
+            <t t-if="store.zip or store.city"><span class="sl-v-line"><t t-out="store.zip"/> <t t-out="store.city"/></span></t>
+            <t t-if="store.state_id or store.country_id"><span class="sl-v-line"><t t-out="store.state_id.name"/><t t-if="store.state_id and store.country_id">, </t><t t-out="store.country_id.name"/></span></t>
+        </span>
+    </template>
+
+    <template id="sl_value_hours" name="Store value: opening hours">
+        <div class="sl-v-hours">
+            <p t-if="store.is_24_hours" class="sl-v-open24 mb-0"><span class="fa fa-clock-o" aria-hidden="true"/> Open 24/7</p>
+            <table t-elif="hours" class="sl-hours">
+                <tbody>
+                    <tr t-foreach="hours" t-as="line" class="sl-hours-row" t-att-data-day="line['day']">
+                        <th scope="row" t-out="line['day']"/>
+                        <td t-out="line['hours'] or '—'"/>
+                    </tr>
+                </tbody>
+            </table>
+            <p t-elif="store.opening_hours" class="sl-hours-text mb-0" t-out="store.opening_hours"/>
+            <p t-else="" class="sl-v-muted mb-0">Opening hours are not available for this store.</p>
+        </div>
+    </template>
+
+    <template id="sl_value_badges" name="Store value: badges">
+        <span class="sl-v-badges">
+            <span class="sl-badge sl-badge-cat" t-if="store.category_id">
+                <span t-if="store.category_id.icon" t-att-class="store.category_id.icon" aria-hidden="true"/>
+                <t t-out="store.category_id.name"/>
+            </span>
+            <span class="sl-badge sl-badge-feat" t-if="store.is_featured"><span class="fa fa-star" aria-hidden="true"/> Featured</span>
+            <span class="sl-badge sl-badge-open" t-if="store.is_24_hours"><span class="fa fa-clock-o" aria-hidden="true"/> Open 24/7</span>
+            <t t-foreach="store.tag_ids" t-as="tag">
+                <span class="sl-badge sl-badge-tag" t-out="tag.name"/>
+            </t>
+        </span>
+    </template>
+
+    <template id="sl_value_contact" name="Store value: contact">
+        <ul class="sl-contact">
+            <li class="sl-contact-phone" t-if="store.phone">
+                <span class="fa fa-phone" aria-hidden="true"/>
+                <a t-att-href="'tel:%s' % store.phone" t-out="store.phone"/>
+            </li>
+            <li class="sl-contact-mobile" t-if="store.mobile">
+                <span class="fa fa-mobile" aria-hidden="true"/>
+                <a t-att-href="'tel:%s' % store.mobile" t-out="store.mobile"/>
+            </li>
+            <li class="sl-contact-email" t-if="store.email">
+                <span class="fa fa-envelope" aria-hidden="true"/>
+                <a t-att-href="'mailto:%s' % store.email" t-out="store.email"/>
+            </li>
+            <li class="sl-contact-website" t-if="store.website">
+                <span class="fa fa-globe" aria-hidden="true"/>
+                <a t-att-href="store.website" target="_blank" rel="noopener noreferrer" t-out="store.website"/>
+            </li>
+            <li class="sl-contact-none" t-if="not store.phone and not store.mobile and not store.email and not store.website">
+                <span class="fa fa-info-circle" aria-hidden="true"/> No contact information available.
+            </li>
+        </ul>
+    </template>
+
+    <!-- Gallery: main stage + thumbnails. Layout (slider / grid / single),  -->
+    <!-- thumbnail position, lightbox... are options of the Gallery block.  -->
+    <template id="sl_value_gallery" name="Store value: gallery">
+        <div class="sl-gal" t-att-data-count="len(gallery)">
+            <div class="sl-gal-stage">
+                <t t-foreach="gallery" t-as="img">
+                    <figure t-attf-class="sl-gal-slide #{'is-active' if img_first else ''} #{'sl-gal-main' if img['main'] else ''}"
+                            t-att-data-index="img_index">
+                        <img t-att-src="img['url']" t-att-alt="img['alt']" t-att-loading="'eager' if img_first else 'lazy'"/>
+                    </figure>
+                </t>
+                <div t-if="not gallery" class="sl-gal-empty">
+                    <span class="fa fa-picture-o" aria-hidden="true"/> No photos yet
+                </div>
+                <button type="button" class="sl-gal-nav sl-gal-prev" aria-label="Previous photo" t-if="len(gallery) &gt; 1">
+                    <span class="fa fa-chevron-left" aria-hidden="true"/>
+                </button>
+                <button type="button" class="sl-gal-nav sl-gal-next" aria-label="Next photo" t-if="len(gallery) &gt; 1">
+                    <span class="fa fa-chevron-right" aria-hidden="true"/>
+                </button>
+                <span class="sl-gal-counter" t-if="len(gallery) &gt; 1"><span class="sl-gal-current">1</span> / <t t-out="len(gallery)"/></span>
+            </div>
+            <div class="sl-gal-thumbs" t-if="len(gallery) &gt; 1">
+                <t t-foreach="gallery" t-as="img">
+                    <button type="button" t-attf-class="sl-gal-thumb #{'is-active' if img_first else ''} #{'sl-gal-main' if img['main'] else ''}"
+                            t-att-data-index="img_index" t-att-aria-label="img['alt']">
+                        <img t-att-src="img['url']" t-att-alt="img['alt']" loading="lazy"/>
+                    </button>
+                </t>
+            </div>
+        </div>
+    </template>
+
+    <template id="sl_value_breadcrumb" name="Store value: breadcrumb">
+        <ol class="breadcrumb sl-breadcrumb mb-0">
+            <li class="breadcrumb-item"><a t-att-href="locator_url">Store Locator</a></li>
+            <li class="breadcrumb-item"><t t-out="store.category_id.name"/></li>
+            <li class="breadcrumb-item active" aria-current="page" t-out="store.name"/>
+        </ol>
+    </template>
+</odoo>
